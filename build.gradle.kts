@@ -27,6 +27,11 @@ dependencies {
 
 	jooqGenerator ("mysql:mysql-connector-java:8.0.28")
 	implementation ("org.jooq:jooq-codegen")
+
+	implementation("org.jooq:jooq-kotlin-coroutines")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
 	implementation ("org.springframework.boot:spring-boot-starter")
 	implementation ("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation ("org.springframework.boot:spring-boot-starter-web")
