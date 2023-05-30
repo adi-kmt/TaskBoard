@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `cards` (
   `card_end_date` datetime NOT NULL,
   `is_card_archived` bit DEFAULT 0 NOT NULL,
   `bucket_id` int NOT NULL,
-  `label_id` int NOT NULL,
+  `label_id` int,
   `user_assigned_id` int NOT NULL,
 
   CONSTRAINT `cards_bucket_added_fk` FOREIGN KEY (`bucket_id`) REFERENCES `buckets` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
