@@ -19,13 +19,11 @@ class BucketRepositoryImpl(@Autowired private val context: DSLContext) : BucketR
                 .returningResult<Int>(BUCKETS.ID)
                 .execute()
             DbResponseWrapper<Int?>(
-                bucketId,
-                null
+                data = bucketId
             )
         } catch (e: Exception) {
             DbResponseWrapper(
-                null,
-                e
+                exception = e
             )
         }
     }
@@ -37,13 +35,11 @@ class BucketRepositoryImpl(@Autowired private val context: DSLContext) : BucketR
                 .where(BUCKETS.BOARD_ID.eq(boardId))
                 .fetchStreamInto(BucketsRecord::class.java).toList()
             DbResponseWrapper<List<BucketsRecord>?>(
-                bucketsList,
-                null
+                data = bucketsList
             )
         } catch (e: Exception) {
             DbResponseWrapper(
-                null,
-                e
+                exception = e
             )
         }
     }

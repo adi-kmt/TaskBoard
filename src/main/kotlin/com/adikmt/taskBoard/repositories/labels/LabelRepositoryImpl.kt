@@ -21,13 +21,11 @@ class LabelRepositoryImpl(@Autowired private val context: DSLContext) : LabelRep
                 ?.returningResult<Int>(LABELS.ID)
                 ?.execute()
             DbResponseWrapper<Int?>(
-                labelId,
-                null
+                data = labelId
             )
         } catch (e: Exception) {
             DbResponseWrapper(
-                null,
-                e
+                exception = e
             )
         }
     }
@@ -39,13 +37,11 @@ class LabelRepositoryImpl(@Autowired private val context: DSLContext) : LabelRep
                 ?.fetchStreamInto(LabelsRecord::class.java)
                 ?.toList()
             DbResponseWrapper<List<LabelsRecord>?>(
-                labelList,
-                null
+                data = labelList
             )
         } catch (e: Exception) {
             DbResponseWrapper(
-                null,
-                e
+                exception = e
             )
         }
 }
