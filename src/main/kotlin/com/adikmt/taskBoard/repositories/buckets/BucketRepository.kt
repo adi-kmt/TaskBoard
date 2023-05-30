@@ -6,8 +6,8 @@ import jooq.generated.tables.records.BucketsRecord
 
 interface BucketRepository {
     /**
-     * APIs to implement (Only can be done by admin)
-     * 1. Create bucket
+     * APIs to implement
+     * 1. Create bucket (Only can be done by admin)
      * 2. Get All buckets
      */
     fun createBucket(bucketRequest: BucketRequest, userId: Int): DbResponseWrapper<Int?>
