@@ -2,7 +2,7 @@ package com.adikmt.taskBoard.repositories.labels
 
 import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.LabelRequest
-import jooq.generated.tables.records.LabelsRecord
+import com.adikmt.taskBoard.dtos.responses.LabelResponse
 
 interface LabelRepository {
     /**
@@ -12,5 +12,5 @@ interface LabelRepository {
      */
     fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int?>
 
-    fun allLabels(): DbResponseWrapper<List<LabelsRecord>?>
+    fun getAllLabels(): DbResponseWrapper<List<LabelResponse>?>
 }

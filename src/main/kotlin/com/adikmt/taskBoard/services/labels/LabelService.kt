@@ -5,7 +5,7 @@ import com.adikmt.taskBoard.dtos.requests.LabelRequest
 import com.adikmt.taskBoard.dtos.responses.LabelResponse
 
 interface LabelService {
-    fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int?>
+    fun createLabel(labelRequest: LabelRequest, userId:Int, boardId:Int): DbResponseWrapper<Int?>
 
-    fun allLabels(): DbResponseWrapper<List<LabelResponse>?>
+    fun getAllLabels(): DbResponseWrapper<List<LabelResponse>?>
 }
