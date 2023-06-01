@@ -1,7 +1,8 @@
 package com.adikmt.taskBoard.dtos.responses
 
 class UserResponse(
-    var userId: Int = 0,
-    var userName: String? = null,
-    var userEmail: String? = null
+    val userId: Int = 0,
+    val userName: String? = null,
+    val userEmail: String? = null,
+    val userPassword: String? = null
 )
