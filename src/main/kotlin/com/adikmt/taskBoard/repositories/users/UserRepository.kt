@@ -3,6 +3,7 @@ package com.adikmt.taskBoard.repositories.users
 import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.UserRequest
 import com.adikmt.taskBoard.dtos.common.UserRole
+import com.adikmt.taskBoard.dtos.requests.AddUserToBoardRequest
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 
 
@@ -15,5 +16,5 @@ interface UserRepository {
      */
     fun createUser(userRequest: UserRequest): DbResponseWrapper<Int?>
     fun getUserByUserName(userId: Int): DbResponseWrapper<UserResponse?>
-    fun addUserToBoard(userId: Int, boardId: Int, role: UserRole): DbResponseWrapper<Boolean>
+    fun addUserToBoard(addUserToBoardRequest: AddUserToBoardRequest): DbResponseWrapper<Boolean>
 }
