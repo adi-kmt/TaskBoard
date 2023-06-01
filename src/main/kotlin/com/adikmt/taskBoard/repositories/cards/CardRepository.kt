@@ -29,9 +29,9 @@ interface CardRepository {
      * Cannot delete
      */
     fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int?>
-    fun getAllCards(boardId: Int): Flow<DbResponseWrapper<CardsRecord>>
-    fun getAllCardsAssignedToUserById(userId: Int, boardId: Int): Flow<DbResponseWrapper<CardsRecord>>
-    fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Int>
-    fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Int>
-    fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Int>
+    fun getAllCards(boardId: Int): Flow<DbResponseWrapper<CardResponse>>
+    fun getAllCardsAssignedToUserById(userId: Int, boardId: Int): Flow<DbResponseWrapper<CardResponse>>
+    fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Int?>
+    fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Int?>
+    fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Int?>
 }

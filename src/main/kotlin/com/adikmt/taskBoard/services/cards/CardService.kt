@@ -5,6 +5,7 @@ import com.adikmt.taskBoard.dtos.requests.CardRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateBucketRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateUserRequest
+import com.adikmt.taskBoard.dtos.responses.CardResponse
 import jooq.generated.tables.records.CardsRecord
 import kotlinx.coroutines.flow.Flow
 
@@ -12,9 +13,9 @@ interface CardService {
 
     fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int?>
 
-    fun getAllCards(boardId: Int): Flow<DbResponseWrapper<CardsRecord>>
+    fun getAllCards(boardId: Int): Flow<DbResponseWrapper<CardResponse>>
 
-    fun getAllCardsAssignedToUserById(userId: Int, boardId: Int): Flow<DbResponseWrapper<CardsRecord>>
+    fun getAllCardsAssignedToUserById(userId: Int, boardId: Int): Flow<DbResponseWrapper<CardResponse>>
 
     fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Int?>
 

@@ -7,5 +7,6 @@ class CardRequest(
     val startDate: String,
     val endDate: String,
     val isCardArchived: Boolean = false,
+    val boardId: Int,
     val bucketId: Int
 )
