@@ -28,8 +28,8 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
         @RequestParam boardId: Int,
         @RequestParam userId: Int
     ): Mono<ResponseEntity<ResponseWrapper<Int?>>> {
-        try {
-            return Mono.just(
+        return try {
+            Mono.just(
                 bucketService.createBucket(
                     bucketRequest = bucketRequest,
                     userId = userId,
@@ -37,7 +37,7 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
                 ).unwrap(ResponseStatus.CREATED)
             )
         } catch (e: Exception) {
-            return Mono.just(
+            Mono.just(
                 ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
             )
         }
@@ -48,13 +48,13 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
         @RequestParam boardId: Int,
         @RequestParam userId: Int
     ): Mono<ResponseEntity<ResponseWrapper<List<BucketResponse>?>>> {
-        try {
-            return Mono.just(
+        return try {
+            Mono.just(
                 bucketService.getAllBucketsForBoardId(
                     boardId = boardId
                 ).unwrap())
         } catch (e: Exception) {
-            return Mono.just(
+            Mono.just(
                 ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
             )
         }

@@ -25,12 +25,12 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
 
     @GetMapping
     fun getAllLabels(): Mono<ResponseEntity<ResponseWrapper<List<LabelResponse>?>>> {
-        try {
-            return Mono.just(
+        return try {
+            Mono.just(
                 labelService.getAllLabels().unwrap()
             )
         } catch (e: Exception) {
-            return Mono.just(
+            Mono.just(
                 ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
             )
         }
@@ -42,8 +42,8 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
         @RequestParam userId: Int,
         @RequestParam boardId: Int
     ): Mono<ResponseEntity<ResponseWrapper<Int?>>> {
-        try {
-            return Mono.just(
+        return try {
+            Mono.just(
                 labelService.createLabel(
                     labelRequest = labelRequest,
                     userId = userId,
@@ -51,7 +51,7 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
                 ).unwrap(responseStatus = ResponseStatus.CREATED)
             )
         } catch (e: Exception) {
-            return Mono.just(
+            Mono.just(
                 ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
             )
         }
