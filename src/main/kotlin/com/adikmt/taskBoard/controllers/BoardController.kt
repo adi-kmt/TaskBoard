@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/api/board")
 class BoardController @Autowired constructor(private val boardService: BoardService) {
 
     @PostMapping

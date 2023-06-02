@@ -17,9 +17,9 @@ interface CardService {
 
     fun getAllCardsAssignedToUserById(userId: Int, boardId: Int): Flow<DbResponseWrapper<CardResponse>>
 
-    fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Int?>
+    fun updateCardDetails(cardRequest: CardUpdateRequest, userId: Int): DbResponseWrapper<Int?>
 
-    fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Int?>
+    fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest, userId: Int): DbResponseWrapper<Int?>
 
-    fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Int?>
+    fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest, userId: Int): DbResponseWrapper<Int?>
 }
