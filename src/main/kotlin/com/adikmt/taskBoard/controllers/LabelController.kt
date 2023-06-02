@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/labels")
 class LabelController @Autowired constructor(private val labelService: LabelService) {
 
-    @GetMapping("/labels")
+    @GetMapping
     fun getAllLabels(): Mono<ResponseEntity<ResponseWrapper<List<LabelResponse>?>>> {
         try {
             return Mono.just(
@@ -36,7 +36,7 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
         }
     }
 
-    @PostMapping("/labels")
+    @PostMapping
     fun addLabel(
         @Valid @RequestBody labelRequest: LabelRequest,
         @RequestParam userId: Int,
