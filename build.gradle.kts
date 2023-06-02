@@ -34,7 +34,6 @@ dependencies {
 
 	implementation ("org.springframework.boot:spring-boot-starter")
 	implementation ("org.springframework.boot:spring-boot-starter-jdbc")
-	implementation ("org.springframework.boot:spring-boot-starter-web")
 
 	implementation ("mysql:mysql-connector-java:8.0.28")
 	implementation ("org.flywaydb:flyway-core")
