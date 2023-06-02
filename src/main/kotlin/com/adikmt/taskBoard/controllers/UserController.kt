@@ -1,5 +1,6 @@
 package com.adikmt.taskBoard.controllers
 
+import com.adikmt.taskBoard.dtos.common.ResponseStatus
 import com.adikmt.taskBoard.dtos.common.ResponseWrapper
 import com.adikmt.taskBoard.dtos.common.unwrap
 import com.adikmt.taskBoard.dtos.requests.LoginUserRequest
@@ -41,7 +42,7 @@ class UserController @Autowired constructor(private val userService: UserService
     fun register(@Valid @RequestBody userRequest: UserRequest): Mono<ResponseEntity<ResponseWrapper<Int?>>> {
         return try {
             Mono.just(
-                userService.registerUser(userRequest).unwrap()
+                userService.registerUser(userRequest).unwrap(responseStatus = ResponseStatus.CREATED)
             )
         } catch (e: Exception) {
             Mono.just(
