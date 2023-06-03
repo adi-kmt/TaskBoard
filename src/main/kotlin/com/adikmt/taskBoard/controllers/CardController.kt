@@ -1,8 +1,8 @@
 package com.adikmt.taskBoard.controllers
 
-import com.adikmt.taskBoard.dtos.common.ResponseStatus
-import com.adikmt.taskBoard.dtos.common.ResponseWrapper
-import com.adikmt.taskBoard.dtos.common.unwrap
+import com.adikmt.taskBoard.dtos.common.wrappers.ResponseStatus
+import com.adikmt.taskBoard.dtos.common.wrappers.ResponseWrapper
+import com.adikmt.taskBoard.dtos.common.wrappers.unwrap
 import com.adikmt.taskBoard.dtos.requests.CardRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateBucketRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateRequest
@@ -11,7 +11,6 @@ import com.adikmt.taskBoard.dtos.responses.CardResponse
 import com.adikmt.taskBoard.services.cards.CardService
 import jakarta.validation.Valid
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,7 +42,7 @@ class CardController @Autowired constructor(private val cardService: CardService
         return try {
             Mono.just(
                 cardService.createCard(cardRequest = cardRequest, userId = userId)
-                    .unwrap(responseStatus = ResponseStatus.CREATED)
+                    .unwrap(successResponseStatus = ResponseStatus.CREATED)
             )
         } catch (e: Exception) {
             Mono.just(

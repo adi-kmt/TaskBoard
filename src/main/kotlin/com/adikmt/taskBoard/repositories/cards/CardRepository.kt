@@ -1,15 +1,12 @@
 package com.adikmt.taskBoard.repositories.cards
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.CardRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateBucketRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateUserRequest
 import com.adikmt.taskBoard.dtos.responses.CardResponse
-import jooq.generated.tables.records.BoardsRecord
-import jooq.generated.tables.records.CardsRecord
 import kotlinx.coroutines.flow.Flow
-import reactor.core.publisher.Mono
 
 interface CardRepository {
     /**

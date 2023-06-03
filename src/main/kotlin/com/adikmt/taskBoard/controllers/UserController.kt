@@ -1,18 +1,15 @@
 package com.adikmt.taskBoard.controllers
 
-import com.adikmt.taskBoard.dtos.common.ResponseStatus
-import com.adikmt.taskBoard.dtos.common.ResponseWrapper
-import com.adikmt.taskBoard.dtos.common.unwrap
+import com.adikmt.taskBoard.dtos.common.wrappers.ResponseStatus
+import com.adikmt.taskBoard.dtos.common.wrappers.ResponseWrapper
+import com.adikmt.taskBoard.dtos.common.wrappers.unwrap
 import com.adikmt.taskBoard.dtos.requests.LoginUserRequest
 import com.adikmt.taskBoard.dtos.requests.UserRequest
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.services.users.UserService
 import jakarta.validation.Valid
-import kotlinx.coroutines.flow.StateFlow
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -42,7 +39,7 @@ class UserController @Autowired constructor(private val userService: UserService
     fun register(@Valid @RequestBody userRequest: UserRequest): Mono<ResponseEntity<ResponseWrapper<Int?>>> {
         return try {
             Mono.just(
-                userService.registerUser(userRequest).unwrap(responseStatus = ResponseStatus.CREATED)
+                userService.registerUser(userRequest).unwrap(successResponseStatus = ResponseStatus.CREATED)
             )
         } catch (e: Exception) {
             Mono.just(

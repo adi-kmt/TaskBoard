@@ -1,8 +1,7 @@
 package com.adikmt.taskBoard.repositories.users
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.UserRequest
-import com.adikmt.taskBoard.dtos.common.UserRole
 import com.adikmt.taskBoard.dtos.requests.AddUserToBoardRequest
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 

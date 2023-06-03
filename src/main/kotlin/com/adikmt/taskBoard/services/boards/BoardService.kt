@@ -1,7 +1,6 @@
 package com.adikmt.taskBoard.services.boards
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
-import com.adikmt.taskBoard.dtos.common.UserRole
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.AddUserToBoardRequest
 import com.adikmt.taskBoard.dtos.requests.BoardRequest
 import com.adikmt.taskBoard.dtos.responses.BoardResponse

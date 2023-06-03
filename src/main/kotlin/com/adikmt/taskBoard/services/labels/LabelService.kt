@@ -1,6 +1,6 @@
 package com.adikmt.taskBoard.services.labels
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.LabelRequest
 import com.adikmt.taskBoard.dtos.responses.LabelResponse
 

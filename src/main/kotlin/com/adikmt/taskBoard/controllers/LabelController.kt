@@ -1,11 +1,10 @@
 package com.adikmt.taskBoard.controllers
 
-import com.adikmt.taskBoard.dtos.common.ResponseStatus
-import com.adikmt.taskBoard.dtos.common.ResponseWrapper
-import com.adikmt.taskBoard.dtos.common.unwrap
+import com.adikmt.taskBoard.dtos.common.wrappers.ResponseStatus
+import com.adikmt.taskBoard.dtos.common.wrappers.ResponseWrapper
+import com.adikmt.taskBoard.dtos.common.wrappers.unwrap
 import com.adikmt.taskBoard.dtos.requests.LabelRequest
 import com.adikmt.taskBoard.dtos.responses.LabelResponse
-import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.services.labels.LabelService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
@@ -48,7 +47,7 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
                     labelRequest = labelRequest,
                     userId = userId,
                     boardId = boardId
-                ).unwrap(responseStatus = ResponseStatus.CREATED)
+                ).unwrap(successResponseStatus = ResponseStatus.CREATED)
             )
         } catch (e: Exception) {
             Mono.just(

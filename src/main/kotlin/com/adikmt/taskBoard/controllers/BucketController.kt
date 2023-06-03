@@ -1,8 +1,8 @@
 package com.adikmt.taskBoard.controllers
 
-import com.adikmt.taskBoard.dtos.common.ResponseStatus
-import com.adikmt.taskBoard.dtos.common.ResponseWrapper
-import com.adikmt.taskBoard.dtos.common.unwrap
+import com.adikmt.taskBoard.dtos.common.wrappers.ResponseStatus
+import com.adikmt.taskBoard.dtos.common.wrappers.ResponseWrapper
+import com.adikmt.taskBoard.dtos.common.wrappers.unwrap
 import com.adikmt.taskBoard.dtos.requests.BucketRequest
 import com.adikmt.taskBoard.dtos.responses.BucketResponse
 import com.adikmt.taskBoard.services.buckets.BucketService

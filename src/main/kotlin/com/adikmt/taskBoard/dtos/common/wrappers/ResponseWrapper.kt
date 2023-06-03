@@ -1,4 +1,4 @@
-package com.adikmt.taskBoard.dtos.common
+package com.adikmt.taskBoard.dtos.common.wrappers
 
 
 class ResponseWrapper<T>(
