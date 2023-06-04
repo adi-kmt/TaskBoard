@@ -41,7 +41,10 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-//	implementation ("org.springframework.boot:spring-boot-starter-security")
+	implementation ("org.springframework.boot:spring-boot-starter-security")
+	implementation ("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation ("io.jsonwebtoken:jjwt-impl:0.11.5")
+	implementation ("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
 	implementation ("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
