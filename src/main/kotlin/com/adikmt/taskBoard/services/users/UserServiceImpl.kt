@@ -6,11 +6,11 @@ import com.adikmt.taskBoard.dtos.requests.UserRequest
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.repositories.users.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.stereotype.Service
 
+@Service
 class UserServiceImpl
 @Autowired constructor(private val userRepository: UserRepository) : UserService {
-    @Transactional
     override fun login(loginUserRequest: LoginUserRequest): DbResponseWrapper<out UserResponse> {
         try {
             val user = userRepository.getUserByUserName(loginUserRequest.userID)

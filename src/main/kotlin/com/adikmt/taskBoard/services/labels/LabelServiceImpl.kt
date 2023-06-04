@@ -8,7 +8,6 @@ import com.adikmt.taskBoard.repositories.boards.BoardRepository
 import com.adikmt.taskBoard.repositories.labels.LabelRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class LabelServiceImpl
@@ -17,7 +16,6 @@ class LabelServiceImpl
     private val boardRepository: BoardRepository
 ) : LabelService {
 
-    @Transactional
     override fun createLabel(labelRequest: LabelRequest, userId: Int, boardId: Int): DbResponseWrapper<out Int?> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId = userId, boardId = boardId)

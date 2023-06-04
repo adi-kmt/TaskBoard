@@ -8,8 +8,9 @@ import com.adikmt.taskBoard.dtos.responses.BoardResponse
 import com.adikmt.taskBoard.repositories.boards.BoardRepository
 import com.adikmt.taskBoard.repositories.users.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.stereotype.Service
 
+@Service
 class BoardServiceImpl
 @Autowired constructor(
     private val boardRepository: BoardRepository,
@@ -23,7 +24,6 @@ class BoardServiceImpl
         }
     }
 
-    @Transactional
     override fun addUserToBoard(
         userId: Int,
         addUserToBoardRequest: AddUserToBoardRequest

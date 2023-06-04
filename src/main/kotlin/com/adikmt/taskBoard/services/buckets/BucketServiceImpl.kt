@@ -8,7 +8,6 @@ import com.adikmt.taskBoard.repositories.boards.BoardRepository
 import com.adikmt.taskBoard.repositories.buckets.BucketRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BucketServiceImpl
@@ -16,7 +15,7 @@ class BucketServiceImpl
     private val bucketRepository: BucketRepository,
     private val boardRepository: BoardRepository
 ) : BucketService {
-    @Transactional
+
     override fun createBucket(bucketRequest: BucketRequest, userId: Int, boardId: Int): DbResponseWrapper<out Int?> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId = userId, boardId = boardId)

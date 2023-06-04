@@ -12,13 +12,13 @@ import com.adikmt.taskBoard.repositories.cards.CardRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.stereotype.Service
 
+@Service
 class CardServiceImpl @Autowired constructor(
     private val cardRepository: CardRepository,
     private val boardRepository: BoardRepository
 ) : CardService {
-    @Transactional
     override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<out Int?> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId, cardRequest.boardId)
