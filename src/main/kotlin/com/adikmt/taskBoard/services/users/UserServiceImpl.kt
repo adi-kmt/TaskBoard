@@ -1,34 +1,44 @@
 package com.adikmt.taskBoard.services.users
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.LoginUserRequest
 import com.adikmt.taskBoard.dtos.requests.UserRequest
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.repositories.users.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
 
 class UserServiceImpl
 @Autowired constructor(private val userRepository: UserRepository) : UserService {
-    override fun login(loginUserRequest: LoginUserRequest): DbResponseWrapper<UserResponse> {
+    @Transactional
+    override fun login(loginUserRequest: LoginUserRequest): DbResponseWrapper<out UserResponse> {
         try {
             val user = userRepository.getUserByUserName(loginUserRequest.userID)
-            user.data?.let { userResponse ->
-                if (userResponse.userName == loginUserRequest.userName && userResponse.userPassword == loginUserRequest.password) {
-                    return DbResponseWrapper(data = userResponse)
-                } else {
-                    return DbResponseWrapper(exception = Exception("Incorrect username or password"))
+
+            return when (user) {
+                is DbResponseWrapper.Success -> {
+                    if ((user.data?.userName?.equals(loginUserRequest.userName) == true) && user.data.userName.equals(
+                            loginUserRequest.userName
+                        )
+                    ) {
+                        DbResponseWrapper.Success(data = user.data)
+                    } else {
+                        DbResponseWrapper.UserException(Exception("Incorrect username or password"))
+                    }
                 }
-            } ?: return DbResponseWrapper(exception = user.exception)
+
+                else -> DbResponseWrapper.UserException(Exception("Something went wrong"))
+            }
         } catch (e: Exception) {
-            return DbResponseWrapper(exception = e)
+            return DbResponseWrapper.ServerException(exception = e)
         }
     }
 
-    override fun registerUser(userRequest: UserRequest): DbResponseWrapper<Int?> {
+    override fun registerUser(userRequest: UserRequest): DbResponseWrapper<out Int?> {
         return try {
             userRepository.createUser(userRequest)
         } catch (e: Exception) {
-            DbResponseWrapper(exception = e)
+            DbResponseWrapper.ServerException(exception = e)
         }
     }
 }

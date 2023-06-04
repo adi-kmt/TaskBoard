@@ -1,10 +1,9 @@
 package com.adikmt.taskBoard.repositories.boards
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.common.UserRole
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.BoardRequest
 import com.adikmt.taskBoard.dtos.responses.BoardResponse
-import jooq.generated.tables.records.BoardsRecord
 
 interface BoardRepository {
     /**

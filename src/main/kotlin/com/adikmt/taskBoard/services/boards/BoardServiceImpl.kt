@@ -1,63 +1,72 @@
 package com.adikmt.taskBoard.services.boards
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.common.UserRole
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.AddUserToBoardRequest
 import com.adikmt.taskBoard.dtos.requests.BoardRequest
 import com.adikmt.taskBoard.dtos.responses.BoardResponse
 import com.adikmt.taskBoard.repositories.boards.BoardRepository
 import com.adikmt.taskBoard.repositories.users.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
 
 class BoardServiceImpl
 @Autowired constructor(
     private val boardRepository: BoardRepository,
     private val userRepository: UserRepository
 ) : BoardService {
-    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int> {
+    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<out Int> {
         return try {
             boardRepository.createBoard(boardRequest, userId)
         } catch (e: Exception) {
-            DbResponseWrapper(exception = e)
+            DbResponseWrapper.ServerException(exception = e)
         }
     }
 
-    override fun addUserToBoard(userId: Int, addUserToBoardRequest: AddUserToBoardRequest): DbResponseWrapper<Boolean> {
+    @Transactional
+    override fun addUserToBoard(
+        userId: Int,
+        addUserToBoardRequest: AddUserToBoardRequest
+    ): DbResponseWrapper<out Boolean> {
         return try {
             val userRole = boardRepository.getUserRoleForBoard(userId, addUserToBoardRequest.boardId)
-            userRole.data?.let { role ->
-                if (role == UserRole.ADMIN) {
-                    userRepository.addUserToBoard(addUserToBoardRequest)
-                } else {
-                    DbResponseWrapper(exception = Exception("Non admins can't add user to board'"))
+            when (userRole) {
+                is DbResponseWrapper.Success -> {
+                    if (userRole.data?.equals(UserRole.ADMIN) == true) {
+                        userRepository.addUserToBoard(addUserToBoardRequest)
+                    } else {
+                        DbResponseWrapper.UserException(exception = Exception("Non admins can't add user to board'"))
+                    }
                 }
-            } ?: DbResponseWrapper(exception = userRole.exception)
+
+                else -> DbResponseWrapper.UserException(exception = Exception("Something went wrong"))
+            }
         } catch (e: Exception) {
-            DbResponseWrapper(exception = e)
+            DbResponseWrapper.UserException(exception = e)
         }
     }
 
-    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardResponse?> {
+    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<out BoardResponse?> {
         return try {
             boardRepository.getBoardById(boardId = boardId, userId = userId)
         } catch (e: Exception) {
-            DbResponseWrapper(exception = e)
+            DbResponseWrapper.ServerException(exception = e)
         }
     }
 
-    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardResponse>?> {
-        return try {
-            boardRepository.searchBoardByName(boardName = boardName, userId = userId)
+    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<out List<BoardResponse>?> {
+        try {
+            return boardRepository.searchBoardByName(boardName = boardName, userId = userId)
         } catch (e: Exception) {
-            DbResponseWrapper(exception = e)
+            return DbResponseWrapper.ServerException(exception = e)
         }
     }
 
-    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardResponse>?> {
+    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<out List<BoardResponse>?> {
         return try {
             boardRepository.getAllBoardsForUser(userId = userId)
         } catch (e: Exception) {
-            DbResponseWrapper(exception = e)
+            return DbResponseWrapper.ServerException(exception = e)
         }
     }
 }

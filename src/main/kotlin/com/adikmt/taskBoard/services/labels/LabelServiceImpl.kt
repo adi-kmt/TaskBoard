@@ -1,12 +1,11 @@
 package com.adikmt.taskBoard.services.labels
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.common.UserRole
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.LabelRequest
 import com.adikmt.taskBoard.dtos.responses.LabelResponse
 import com.adikmt.taskBoard.repositories.boards.BoardRepository
 import com.adikmt.taskBoard.repositories.labels.LabelRepository
-import com.adikmt.taskBoard.repositories.users.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,26 +17,32 @@ class LabelServiceImpl
     private val boardRepository: BoardRepository
 ) : LabelService {
 
-    override fun createLabel(labelRequest: LabelRequest, userId: Int, boardId: Int): DbResponseWrapper<Int?> {
+    @Transactional
+    override fun createLabel(labelRequest: LabelRequest, userId: Int, boardId: Int): DbResponseWrapper<out Int?> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId = userId, boardId = boardId)
-            userRole.data?.let { role ->
-                if (role == UserRole.ADMIN) {
-                    return labelRepository.createLabel(labelRequest)
-                } else {
-                    return DbResponseWrapper(exception = Exception("Only admins can create labels"))
+
+            return when (userRole) {
+                is DbResponseWrapper.Success -> {
+                    if (userRole.data?.equals(UserRole.ADMIN) == true) {
+                        labelRepository.createLabel(labelRequest)
+                    } else {
+                        DbResponseWrapper.UserException(exception = Exception("Only admins can create labels"))
+                    }
                 }
-            } ?: return DbResponseWrapper(exception = userRole.exception)
+
+                else -> DbResponseWrapper.UserException(exception = Exception("Something went wrong"))
+            }
         } catch (e: Exception) {
-            return DbResponseWrapper(exception = e)
+            return DbResponseWrapper.ServerException(exception = e)
         }
     }
 
-    override fun getAllLabels(): DbResponseWrapper<List<LabelResponse>?> {
+    override fun getAllLabels(): DbResponseWrapper<out List<LabelResponse>?> {
         return try {
             labelRepository.getAllLabels()
         } catch (e: Exception) {
-            DbResponseWrapper(exception = e)
+            DbResponseWrapper.ServerException(exception = e)
         }
     }
 }

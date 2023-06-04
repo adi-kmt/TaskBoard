@@ -1,7 +1,11 @@
 package com.adikmt.taskBoard.dtos.requests
 
+import jakarta.validation.constraints.NotNull
+
 
 class CardUpdateUserRequest(
+    @NotNull
     val id: Int,
-    val userId: Int
+    @NotNull
+    val newUserId: Int
 )
