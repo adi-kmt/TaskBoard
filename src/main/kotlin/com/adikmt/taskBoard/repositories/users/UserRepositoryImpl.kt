@@ -1,6 +1,10 @@
 package com.adikmt.taskBoard.repositories.users
 
+import com.adikmt.taskBoard.dtos.common.UserRole
+import com.adikmt.taskBoard.dtos.common.mappers.toUserResponse
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.UserRequest
+import com.adikmt.taskBoard.dtos.responses.UserResponse
 import jooq.generated.enums.BoardsUserAddedUserRole
 import jooq.generated.tables.BoardsUserAdded.Companion.BOARDS_USER_ADDED
 import jooq.generated.tables.Users
@@ -12,39 +16,45 @@ import org.springframework.beans.factory.annotation.Autowired
 
 class UserRepositoryImpl(@Autowired private val context: DSLContext) : UserRepository {
 
-    override fun createUser(userRequest: UserRequest): DbResponseWrapper<Int?> {
+    override fun createUser(userRequest: UserRequest): DbResponseWrapper<out Int> {
         return try {
-            val userId: Int? = context.insertInto<UsersRecord>(USERS)
+            val userId = context.insertInto<UsersRecord>(USERS)
                 .set(USERS.USER_NAME, userRequest.userName)
                 .set(USERS.USER_PASSWORD, userRequest.password)
-                ?.onDuplicateKeyIgnore()
-                ?.returningResult<Int>(USERS.ID)
-                ?.execute()
-            DbResponseWrapper<Int?>(
+                .onDuplicateKeyIgnore()
+                .returningResult<Int>(USERS.ID)
+                .execute()
+
+
+            DbResponseWrapper.Success(
                 data = userId
             )
         } catch (e: Exception) {
-            DbResponseWrapper(
+            DbResponseWrapper.ServerException(
                 exception = e
             )
         }
     }
 
-    override fun getUserByUserName(userId: Int): DbResponseWrapper<UsersRecord?> {
+    override fun getUserByUserName(userId: Int): DbResponseWrapper<out UserResponse> {
         return try {
-            val user: UsersRecord? = context?.selectFrom<UsersRecord>(Users.Companion.USERS)
-                ?.where(Users.Companion.USERS.ID.eq(userId))?.fetchSingle()
-            DbResponseWrapper<UsersRecord?>(
+            val user = context
+                .selectFrom<UsersRecord>(Users.Companion.USERS)
+                .where(Users.Companion.USERS.ID.eq(userId))
+                .fetchSingle()
+                .toUserResponse()
+
+            DbResponseWrapper.Success(
                 data = user
             )
         } catch (e: Exception) {
-            DbResponseWrapper(
+            DbResponseWrapper.ServerException(
                 exception = e
             )
         }
     }
 
-    override fun addUserToBoard(userId: Int, boardId: Int, role: UserRole): DbResponseWrapper<Boolean> {
+    override fun addUserToBoard(userId: Int, boardId: Int, role: UserRole): DbResponseWrapper<out Boolean> {
         try {
             val id: Int? = context?.insertInto<BoardsUserAddedRecord>(BOARDS_USER_ADDED)
                 ?.set(BOARDS_USER_ADDED.BOARD_ID, boardId)
@@ -54,17 +64,15 @@ class UserRepositoryImpl(@Autowired private val context: DSLContext) : UserRepos
                 ?.returningResult<Int>(BOARDS_USER_ADDED.BOARD_ID)
                 ?.execute()
             return id?.let {
-                DbResponseWrapper(
+                DbResponseWrapper.Success(
                     data = true
                 )
-            } ?: DbResponseWrapper(
-                data = false,
+            } ?: DbResponseWrapper.ServerException(
                 exception = Exception("Id couldn't be added to board")
             )
 
         } catch (e: Exception) {
-            return DbResponseWrapper(
-                data = false,
+            return DbResponseWrapper.ServerException(
                 exception = e
             )
         }

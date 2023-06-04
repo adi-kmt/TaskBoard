@@ -18,5 +18,5 @@ interface BoardRepository {
     fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<out BoardResponse>
     fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<out List<BoardResponse>>
     fun getAllBoardsForUser(userId: Int): DbResponseWrapper<out List<BoardResponse>>
-    fun getUserRoleForBoard(userId: Int, boardId: Int): DbResponseWrapper<UserRole?>
+    fun getUserRoleForBoard(userId: Int, boardId: Int): DbResponseWrapper<out UserRole>
 }

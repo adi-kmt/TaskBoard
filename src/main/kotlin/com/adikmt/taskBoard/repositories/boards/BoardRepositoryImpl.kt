@@ -1,6 +1,7 @@
 package com.adikmt.taskBoard.repositories.boards
 
 import com.adikmt.taskBoard.dtos.common.UserRole
+import com.adikmt.taskBoard.dtos.common.mappers.toBoardResponse
 import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.BoardRequest
 import com.adikmt.taskBoard.dtos.responses.BoardResponse
@@ -34,15 +35,15 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
 
                 DSL.using(configuration)
                     .insertInto(BOARDS_USER_ADDED)
-                     .set(BOARDS_USER_ADDED.BOARD_ID, boardId)
-                     .set(BOARDS_USER_ADDED.USER_ID, userId)
-                     .set(BOARDS_USER_ADDED.USER_ROLE, BoardsUserAddedUserRole.valueOf(boardRequest.role.name))
-                     .onDuplicateKeyIgnore()
-                     .execute()
+                    .set(BOARDS_USER_ADDED.BOARD_ID, boardId)
+                    .set(BOARDS_USER_ADDED.USER_ID, userId)
+                    .set(BOARDS_USER_ADDED.USER_ROLE, BoardsUserAddedUserRole.valueOf(boardRequest.role.name))
+                    .onDuplicateKeyIgnore()
+                    .execute()
 
                 return@transactionResultAsync DbResponseWrapper.Success(data = boardId)
             }.toCompletableFuture()
-             return data.join()
+            return data.join()
         } catch (e: Exception) {
             return DbResponseWrapper.ServerException(
                 exception = e
@@ -65,6 +66,7 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
                 .where(BOARDS_USER_ADDED.USER_ID.eq(userId).and(BOARDS.ID.eq(boardId)))
                 .fetchSingle()
                 .into(BoardsRecord::class.java)
+                .toBoardResponse()
 
             return DbResponseWrapper.Success(data = board)
         } catch (e: Exception) {
@@ -87,7 +89,11 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
                 .leftOuterJoin(BOARDS_USER_ADDED)
                 .on(BOARDS.ID.eq(BOARDS_USER_ADDED.BOARD_ID))
                 .where(BOARDS_USER_ADDED.USER_ID.eq(userId).and(BOARDS.BOARD_TITLE.likeIgnoreCase(boardName)))
-                .fetchStreamInto(BoardsRecord::class.java).toList()
+                .fetchStreamInto(BoardsRecord::class.java)
+                .toList()
+                .map {
+                    it.toBoardResponse()
+                }
 
             return DbResponseWrapper.Success(data = boardList)
         } catch (e: Exception) {
@@ -112,6 +118,9 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
                 .where(BOARDS_USER_ADDED.USER_ID.eq(userId))
                 .fetchStreamInto(BoardsRecord::class.java)
                 .toList()
+                .map {
+                    it.toBoardResponse()
+                }
 
             return DbResponseWrapper.Success(data = boardList)
         } catch (e: Exception) {
@@ -121,7 +130,22 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
         }
     }
 
-    override fun getUserRoleForBoard(userId: Int, boardId: Int): DbResponseWrapper<UserRole?> {
-        TODO("Not yet implemented")
+    override fun getUserRoleForBoard(userId: Int, boardId: Int): DbResponseWrapper<out UserRole> {
+        try {
+            val role = context
+                .select(BOARDS_USER_ADDED.USER_ROLE)
+                .from(BOARDS_USER_ADDED)
+                .where(BOARDS_USER_ADDED.USER_ID.eq(userId).and(BOARDS_USER_ADDED.BOARD_ID.eq(boardId)))
+                .fetchSingle().component1()
+
+            return role?.let { userRole ->
+                DbResponseWrapper.Success(UserRole.valueOf(userRole.name))
+            } ?: DbResponseWrapper.UserException(Exception("User and board IDs don't match"))
+
+        } catch (e: Exception) {
+            return DbResponseWrapper.ServerException(
+                exception = e
+            )
+        }
     }
 }

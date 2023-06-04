@@ -1,7 +1,8 @@
 package com.adikmt.taskBoard.repositories.labels
 
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.LabelRequest
-import jooq.generated.tables.records.LabelsRecord
+import com.adikmt.taskBoard.dtos.responses.LabelResponse
 
 interface LabelRepository {
     /**
@@ -9,7 +10,7 @@ interface LabelRepository {
      * 1. Create Labels (Only to be done by admin)
      * 2. Get All labels
      */
-    fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int?>
+    fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<out Int>
 
-    fun allLabels(): DbResponseWrapper<List<LabelsRecord>?>
+    fun allLabels(): DbResponseWrapper<out List<LabelResponse>>
 }
