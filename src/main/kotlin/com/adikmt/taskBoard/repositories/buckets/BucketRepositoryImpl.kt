@@ -1,6 +1,5 @@
 package com.adikmt.taskBoard.repositories.buckets
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.BucketRequest
 import jooq.generated.tables.Buckets.Companion.BUCKETS
 import jooq.generated.tables.records.BucketsRecord

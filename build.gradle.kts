@@ -4,7 +4,8 @@ plugins {
 	id("org.springframework.boot") version "3.1.0"
 	id("io.spring.dependency-management") version "1.1.0"
 	id("nu.studer.jooq") version "8.1"
-	id("org.flywaydb.flyway") version "9.4.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.6.0"
+    id("org.flywaydb.flyway") version "9.4.0"
 	kotlin("jvm") version "1.8.21"
 	kotlin("plugin.spring") version "1.8.21"
 }
@@ -18,36 +19,39 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
-	compileOnly ("org.projectlombok:lombok")
-	annotationProcessor ("org.projectlombok:lombok")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-	implementation ("org.springframework.boot:spring-boot-starter-webflux")
-	implementation ("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter")
 
-	jooqGenerator ("mysql:mysql-connector-java:8.0.28")
-	implementation ("org.jooq:jooq-codegen")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
-	implementation("org.jooq:jooq-kotlin-coroutines")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
-	implementation ("org.springframework.boot:spring-boot-starter")
-	implementation ("org.springframework.boot:spring-boot-starter-jdbc")
-	implementation ("org.springframework.boot:spring-boot-starter-web")
+    jooqGenerator("mysql:mysql-connector-java:8.0.28")
+    implementation("org.jooq:jooq-codegen")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
 
-	implementation ("mysql:mysql-connector-java:8.0.28")
-	implementation ("org.flywaydb:flyway-core")
+    implementation("mysql:mysql-connector-java:8.0.28")
+    implementation("org.flywaydb:flyway-core")
+
+
+    implementation("org.jooq:jooq-kotlin-coroutines")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
 //	implementation ("org.springframework.boot:spring-boot-starter-security")
 
-	implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
-	implementation ("org.springframework.boot:spring-boot-starter-validation")
-	testImplementation ("io.projectreactor:reactor-test")
-	developmentOnly ("org.springframework.boot:spring-boot-devtools")
-	implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
-	testImplementation ("org.springframework.boot:spring-boot-starter-test")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("io.mockk:mockk:1.13.5")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 //	testImplementation ("org.springframework.security:spring-security-test")
 }
 

@@ -1,9 +1,7 @@
 package com.adikmt.taskBoard.repositories.users
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.UserRequest
 import jooq.generated.tables.records.UsersRecord
-import com.adikmt.taskBoard.dtos.common.UserRole
 
 
 interface UserRepository {

@@ -1,8 +1,6 @@
 package com.adikmt.taskBoard.repositories.labels
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.LabelRequest
-import jooq.generated.tables.Labels
 import jooq.generated.tables.Labels.Companion.LABELS
 import jooq.generated.tables.records.LabelsRecord
 import org.jooq.DSLContext

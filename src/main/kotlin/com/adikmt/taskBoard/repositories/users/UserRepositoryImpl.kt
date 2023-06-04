@@ -1,7 +1,5 @@
 package com.adikmt.taskBoard.repositories.users
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
-import com.adikmt.taskBoard.dtos.common.UserRole
 import com.adikmt.taskBoard.dtos.requests.UserRequest
 import jooq.generated.enums.BoardsUserAddedUserRole
 import jooq.generated.tables.BoardsUserAdded.Companion.BOARDS_USER_ADDED

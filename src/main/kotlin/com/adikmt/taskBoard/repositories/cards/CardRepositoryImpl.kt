@@ -1,11 +1,9 @@
 package com.adikmt.taskBoard.repositories.cards
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.CardRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateBucketRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateUserRequest
-import com.adikmt.taskBoard.dtos.responses.CardResponse
 import java.time.LocalDateTime
 import jooq.generated.tables.records.CardsRecord
 import jooq.generated.tables.references.BOARDS

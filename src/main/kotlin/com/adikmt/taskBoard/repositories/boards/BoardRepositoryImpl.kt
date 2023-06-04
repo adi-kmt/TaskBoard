@@ -1,10 +1,11 @@
 package com.adikmt.taskBoard.repositories.boards
 
-import com.adikmt.taskBoard.dtos.common.DbResponseWrapper
+import com.adikmt.taskBoard.dtos.common.UserRole
+import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.BoardRequest
+import com.adikmt.taskBoard.dtos.responses.BoardResponse
 import java.util.concurrent.CompletableFuture
 import jooq.generated.enums.BoardsUserAddedUserRole
-import jooq.generated.tables.Buckets
 import jooq.generated.tables.records.BoardsRecord
 import jooq.generated.tables.references.BOARDS
 import jooq.generated.tables.references.BOARDS_USER_ADDED
@@ -16,13 +17,13 @@ import org.springframework.stereotype.Repository
 @Repository
 class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRepository {
 
-    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int> {
+    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<out Int> {
         /** In one transaction :-
          * 1. Add board to boards table
          * 2. Add user to boards-user table with role
          */
-         try {
-             val data:CompletableFuture<DbResponseWrapper<Int>> = context.transactionResultAsync { configuration ->
+        try {
+            val data: CompletableFuture<out DbResponseWrapper<Int>> = context.transactionResultAsync { configuration ->
                 val boardId: Int = DSL.using(configuration)
                     .insertInto(BOARDS)
                     .set(BOARDS.BOARD_TITLE, boardRequest.title)
@@ -31,25 +32,25 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
                     .returningResult<Int>(BOARDS.ID)
                     .execute()
 
-                 DSL.using(configuration)
-                     .insertInto(BOARDS_USER_ADDED)
+                DSL.using(configuration)
+                    .insertInto(BOARDS_USER_ADDED)
                      .set(BOARDS_USER_ADDED.BOARD_ID, boardId)
                      .set(BOARDS_USER_ADDED.USER_ID, userId)
                      .set(BOARDS_USER_ADDED.USER_ROLE, BoardsUserAddedUserRole.valueOf(boardRequest.role.name))
                      .onDuplicateKeyIgnore()
                      .execute()
 
-                return@transactionResultAsync DbResponseWrapper(data = boardId)
+                return@transactionResultAsync DbResponseWrapper.Success(data = boardId)
             }.toCompletableFuture()
              return data.join()
         } catch (e: Exception) {
-             return DbResponseWrapper(
+            return DbResponseWrapper.ServerException(
                 exception = e
             )
         }
     }
 
-    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardsRecord?> {
+    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<out BoardResponse> {
         /** In one transaction :-
          * 1. Join b/w boards and boards-users
          * 2. where clause to get particular id
@@ -65,15 +66,15 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
                 .fetchSingle()
                 .into(BoardsRecord::class.java)
 
-            return DbResponseWrapper(data = board)
+            return DbResponseWrapper.Success(data = board)
         } catch (e: Exception) {
-            return DbResponseWrapper(
+            return DbResponseWrapper.ServerException(
                 exception = e
             )
         }
     }
 
-    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardsRecord>?> {
+    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<out List<BoardResponse>> {
         /** In one transaction :-
          * 1. Join b/w boards and boards-users
          * 2. where clause to get like board name
@@ -88,15 +89,15 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
                 .where(BOARDS_USER_ADDED.USER_ID.eq(userId).and(BOARDS.BOARD_TITLE.likeIgnoreCase(boardName)))
                 .fetchStreamInto(BoardsRecord::class.java).toList()
 
-            return DbResponseWrapper(data = boardList)
+            return DbResponseWrapper.Success(data = boardList)
         } catch (e: Exception) {
-            return DbResponseWrapper(
+            return DbResponseWrapper.ServerException(
                 exception = e
             )
         }
     }
 
-    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardsRecord>?> {
+    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<out List<BoardResponse>> {
         /** In one transaction :-
          * 1. Join b/w boards and boards-users
          * 2. where clause to get for particular user
@@ -109,13 +110,18 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
                 .leftOuterJoin(BOARDS_USER_ADDED)
                 .on(BOARDS.ID.eq(BOARDS_USER_ADDED.BOARD_ID))
                 .where(BOARDS_USER_ADDED.USER_ID.eq(userId))
-                .fetchStreamInto(BoardsRecord::class.java).toList()
+                .fetchStreamInto(BoardsRecord::class.java)
+                .toList()
 
-            return DbResponseWrapper(data = boardList)
+            return DbResponseWrapper.Success(data = boardList)
         } catch (e: Exception) {
-            return DbResponseWrapper(
+            return DbResponseWrapper.ServerException(
                 exception = e
             )
         }
+    }
+
+    override fun getUserRoleForBoard(userId: Int, boardId: Int): DbResponseWrapper<UserRole?> {
+        TODO("Not yet implemented")
     }
 }
