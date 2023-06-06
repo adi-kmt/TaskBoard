@@ -9,10 +9,13 @@ import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.services.users.UserService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
@@ -25,6 +28,7 @@ class UserController @Autowired constructor(private val userService: UserService
     fun login(@Valid @RequestBody userRequest: LoginUserRequest)
             : Mono<ResponseEntity<ResponseWrapper<UserResponse>>> {
         return try {
+            //Check if user token validated and return new token
             Mono.just(
                 userService.login(userRequest).unwrap()
             )
@@ -48,4 +52,20 @@ class UserController @Autowired constructor(private val userService: UserService
         }
     }
 
+    @PostMapping("/logout")
+    fun logout(@RequestHeader header: HttpHeaders): ResponseEntity<ResponseWrapper<String>> {
+        val authHeader = header.getFirst(HttpHeaders.AUTHORIZATION)
+        if (authHeader.isNullOrEmpty() || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity(
+                ResponseWrapper(errorMessage = "No authorization header found"),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
+
+        ReactiveSecurityContextHolder.clearContext()
+
+        return ResponseEntity(
+            ResponseWrapper(data = "Logout process completed"), HttpStatus.OK
+        )
+    }
 }

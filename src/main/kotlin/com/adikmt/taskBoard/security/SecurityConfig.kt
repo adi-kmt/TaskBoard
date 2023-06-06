@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
-import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
 import org.springframework.security.config.Customizer
@@ -18,9 +17,7 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint
-import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler
-import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers
 import org.springframework.stereotype.Component
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.reactive.CorsConfigurationSource
@@ -51,7 +48,7 @@ class SecurityConfig @Autowired constructor(
                         "/swagger-ui.html",
                         "/swagger-ui/**"
                     ).permitAll()
-                    .pathMatchers("/register").permitAll()
+                    .pathMatchers("/register", "/login").permitAll()
                     .pathMatchers("/**").authenticated()
             })
             .addFilterAt(jwtAuthFilter, SecurityWebFiltersOrder.AUTHORIZATION)
