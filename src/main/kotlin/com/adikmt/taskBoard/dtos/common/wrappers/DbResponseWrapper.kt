@@ -47,19 +47,4 @@ fun <T> DbResponseWrapper<T>.unwrap(
             HttpStatus.INTERNAL_SERVER_ERROR
         )
     }
-
-
-//    if (data != null) {
-//        return when (responseStatus) {
-//            ResponseStatus.OK -> ResponseEntity(ResponseWrapper(data = data), header, HttpStatus.OK)
-//
-//            ResponseStatus.CREATED -> ResponseEntity(ResponseWrapper(data = data), header, HttpStatus.CREATED)
-//
-//            ResponseStatus.ACCEPTED -> ResponseEntity(ResponseWrapper(data = data), header, HttpStatus.ACCEPTED)
-//        }
-//    } else if (exception != null) {
-//        return ResponseEntity(ResponseWrapper(errorMessage = exception.message), HttpStatus.INTERNAL_SERVER_ERROR)
-//    } else {
-//        return ResponseEntity(ResponseWrapper(errorMessage = "Something went wrong"), HttpStatus.INTERNAL_SERVER_ERROR)
-//    }
 }
