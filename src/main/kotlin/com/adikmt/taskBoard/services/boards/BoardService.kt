@@ -7,13 +7,13 @@ import com.adikmt.taskBoard.dtos.responses.BoardResponse
 
 interface BoardService {
 
-    fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<out Int>
+    fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int>
 
-    fun addUserToBoard(userId: Int, addUserToBoardRequest: AddUserToBoardRequest): DbResponseWrapper<out Boolean>
+    fun addUserToBoard(userId: Int, addUserToBoardRequest: AddUserToBoardRequest): DbResponseWrapper<Boolean>
 
-    fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<out BoardResponse?>
+    fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardResponse?>
 
-    fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<out List<BoardResponse>?>
+    fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardResponse>?>
 
-    fun getAllBoardsForUser(userId: Int): DbResponseWrapper<out List<BoardResponse>?>
+    fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardResponse>?>
 }

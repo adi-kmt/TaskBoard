@@ -16,7 +16,7 @@ class BucketServiceImpl
     private val boardRepository: BoardRepository
 ) : BucketService {
 
-    override fun createBucket(bucketRequest: BucketRequest, userId: Int, boardId: Int): DbResponseWrapper<out Int?> {
+    override fun createBucket(bucketRequest: BucketRequest, userId: Int, boardId: Int): DbResponseWrapper<Int?> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId = userId, boardId = boardId)
             return when (userRole) {
@@ -35,7 +35,7 @@ class BucketServiceImpl
         }
     }
 
-    override fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<out List<BucketResponse>?> {
+    override fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<List<BucketResponse>?> {
         return try {
             bucketRepository.getAllBucketsForBoardId(boardId)
         } catch (e: Exception) {

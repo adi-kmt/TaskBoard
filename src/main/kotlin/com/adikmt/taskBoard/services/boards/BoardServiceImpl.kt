@@ -11,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class BoardServiceImpl
-@Autowired constructor(
+class BoardServiceImpl @Autowired constructor(
     private val boardRepository: BoardRepository,
     private val userRepository: UserRepository
 ) : BoardService {
-    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<out Int> {
+    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int> {
         return try {
             boardRepository.createBoard(boardRequest, userId)
         } catch (e: Exception) {
@@ -27,7 +26,7 @@ class BoardServiceImpl
     override fun addUserToBoard(
         userId: Int,
         addUserToBoardRequest: AddUserToBoardRequest
-    ): DbResponseWrapper<out Boolean> {
+    ): DbResponseWrapper<Boolean> {
         return try {
             val userRole = boardRepository.getUserRoleForBoard(userId, addUserToBoardRequest.boardId)
             when (userRole) {
@@ -46,7 +45,7 @@ class BoardServiceImpl
         }
     }
 
-    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<out BoardResponse?> {
+    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardResponse?> {
         return try {
             boardRepository.getBoardById(boardId = boardId, userId = userId)
         } catch (e: Exception) {
@@ -54,7 +53,7 @@ class BoardServiceImpl
         }
     }
 
-    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<out List<BoardResponse>?> {
+    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardResponse>?> {
         try {
             return boardRepository.searchBoardByName(boardName = boardName, userId = userId)
         } catch (e: Exception) {
@@ -62,7 +61,7 @@ class BoardServiceImpl
         }
     }
 
-    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<out List<BoardResponse>?> {
+    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardResponse>?> {
         return try {
             boardRepository.getAllBoardsForUser(userId = userId)
         } catch (e: Exception) {

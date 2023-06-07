@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class LabelServiceImpl
-@Autowired constructor(
+class LabelServiceImpl @Autowired constructor(
     private val labelRepository: LabelRepository,
     private val boardRepository: BoardRepository
 ) : LabelService {
 
-    override fun createLabel(labelRequest: LabelRequest, userId: Int, boardId: Int): DbResponseWrapper<out Int?> {
+    override fun createLabel(labelRequest: LabelRequest, userId: Int, boardId: Int): DbResponseWrapper<Int?> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId = userId, boardId = boardId)
 
@@ -36,7 +35,7 @@ class LabelServiceImpl
         }
     }
 
-    override fun getAllLabels(): DbResponseWrapper<out List<LabelResponse>?> {
+    override fun getAllLabels(): DbResponseWrapper<List<LabelResponse>?> {
         return try {
             labelRepository.getAllLabels()
         } catch (e: Exception) {

@@ -19,7 +19,7 @@ class CardServiceImpl @Autowired constructor(
     private val cardRepository: CardRepository,
     private val boardRepository: BoardRepository
 ) : CardService {
-    override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<out Int?> {
+    override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int?> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId, cardRequest.boardId)
 
@@ -59,7 +59,7 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<out Int?> {
+    override fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Int?> {
         return try {
             cardRepository.updateCardDetails(cardRequest)
         } catch (e: Exception) {
@@ -67,7 +67,7 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<out Int?> {
+    override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Int?> {
         return try {
             cardRepository.updateCardBucket(cardUpdateBucketRequest)
         } catch (e: Exception) {
@@ -75,7 +75,7 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<out Int?> {
+    override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Int?> {
         return try {
             cardRepository.assignCardToAnotherUser(cardUpdateUserRequest)
         } catch (e: Exception) {

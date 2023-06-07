@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserServiceImpl
 @Autowired constructor(private val userRepository: UserRepository) : UserService {
-    override fun login(loginUserRequest: LoginUserRequest): DbResponseWrapper<out UserResponse> {
+    override fun login(loginUserRequest: LoginUserRequest): DbResponseWrapper<UserResponse> {
         try {
             val user = userRepository.getUserByUserName(loginUserRequest.userID)
 
@@ -34,7 +34,7 @@ class UserServiceImpl
         }
     }
 
-    override fun registerUser(userRequest: UserRequest): DbResponseWrapper<out Int?> {
+    override fun registerUser(userRequest: UserRequest): DbResponseWrapper<Int?> {
         return try {
             userRepository.createUser(userRequest)
         } catch (e: Exception) {
