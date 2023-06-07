@@ -10,15 +10,15 @@ import kotlinx.coroutines.flow.Flow
 
 interface CardService {
 
-    fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int?>
+    fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<out Int?>
 
     fun getAllCards(boardId: Int): Flow<DbResponseWrapper<CardResponse>>
 
     fun getAllCardsAssignedToUserById(userId: Int, boardId: Int): Flow<DbResponseWrapper<CardResponse>>
 
-    fun updateCardDetails(cardRequest: CardUpdateRequest, userId: Int): DbResponseWrapper<Int?>
+    fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<out Int?>
 
-    fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest, userId: Int): DbResponseWrapper<Int?>
+    fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<out Int?>
 
-    fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest, userId: Int): DbResponseWrapper<Int?>
+    fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<out Int?>
 }
