@@ -37,18 +37,17 @@ class SecurityConfig @Autowired constructor(
     @Bean
     fun springWebFilterChain(
         http: ServerHttpSecurity,
-        jwtUtil: JWTUtil,
-        reactiveAuthenticationManager: ReactiveAuthenticationManager,
+//        reactiveAuthenticationManager: ReactiveAuthenticationManager,
         corsConfigurationSource: CorsConfigurationSource
     ): SecurityWebFilterChain? {
         return http
             .authorizeExchange(Customizer {
                 it
                     .pathMatchers(
-                        "/swagger-ui.html",
-                        "/swagger-ui/**"
+                        "/api/swagger-ui.html",
+                        "/api/swagger-ui/**"
                     ).permitAll()
-                    .pathMatchers("/register", "/login").permitAll()
+                    .pathMatchers("/api/register", "/api/login").permitAll()
                     .pathMatchers("/**").authenticated()
             })
             .addFilterAt(jwtAuthFilter, SecurityWebFiltersOrder.AUTHORIZATION)

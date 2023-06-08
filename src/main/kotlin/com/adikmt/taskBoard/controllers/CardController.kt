@@ -84,7 +84,7 @@ class CardController @Autowired constructor(private val cardService: CardService
         return try {
             Mono.just(
                 cardService.updateCardDetails(
-                    cardRequest = cardUpdateRequest, userId = userId
+                    cardRequest = cardUpdateRequest
                 ).unwrap()
             )
         } catch (e: Exception) {
@@ -102,7 +102,7 @@ class CardController @Autowired constructor(private val cardService: CardService
         return try {
             Mono.just(
                 cardService.updateCardBucket(
-                    cardUpdateBucketRequest = cardUpdateBucketRequest, userId = userId
+                    cardUpdateBucketRequest = cardUpdateBucketRequest
                 ).unwrap()
             )
         } catch (e: Exception) {
@@ -120,7 +120,7 @@ class CardController @Autowired constructor(private val cardService: CardService
         return try {
             Mono.just(
                 cardService.assignCardToAnotherUser(
-                    cardUpdateUserRequest = cardUpdateUserRequest, userId = userId
+                    cardUpdateUserRequest = cardUpdateUserRequest
                 ).unwrap()
             )
         } catch (e: Exception) {

@@ -43,18 +43,22 @@ dependencies {
 
 	implementation ("org.springframework.boot:spring-boot-starter-security")
 	implementation ("io.jsonwebtoken:jjwt-api:0.11.5")
-	implementation ("io.jsonwebtoken:jjwt-impl:0.11.5")
-	implementation ("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-	implementation ("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation ("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
-	developmentOnly ("org.springframework.boot:spring-boot-devtools")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-	testImplementation ("io.projectreactor:reactor-test")
-	testImplementation("io.mockk:mockk:1.13.5")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "mockito-core")
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
     testImplementation("org.springframework.security:spring-security-test")
 }
 
