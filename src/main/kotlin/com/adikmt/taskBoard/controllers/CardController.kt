@@ -54,7 +54,7 @@ class CardController @Autowired constructor(private val cardService: CardService
     @GetMapping("/{boardId}")
     fun getAllCards(
         @PathVariable boardId: Int,
-        @RequestParam(required = false) userId: Int?
+        @RequestParam(required = false) userId: Int? = null
     ): Flow<ResponseEntity<ResponseWrapper<CardResponse>>> {
         try {
             val headers = HttpHeaders().also {
