@@ -16,9 +16,9 @@ class BucketServiceImpl
     private val boardRepository: BoardRepository
 ) : BucketService {
 
-    override fun createBucket(bucketRequest: BucketRequest, userId: Int, boardId: Int): DbResponseWrapper<Int?> {
+    override fun createBucket(bucketRequest: BucketRequest, userId: Int): DbResponseWrapper<Int?> {
         try {
-            val userRole = boardRepository.getUserRoleForBoard(userId = userId, boardId = boardId)
+            val userRole = boardRepository.getUserRoleForBoard(userId = userId, boardId = bucketRequest.boardId)
             return when (userRole) {
                 is DbResponseWrapper.Success -> {
                     if (userRole.data?.equals(UserRole.ADMIN) == true) {

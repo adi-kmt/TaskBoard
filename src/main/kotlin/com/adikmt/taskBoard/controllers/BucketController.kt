@@ -25,15 +25,13 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
     @PostMapping
     fun createBucket(
         @Valid @RequestBody bucketRequest: BucketRequest,
-        @RequestParam boardId: Int,
         @RequestParam userId: Int
     ): Mono<ResponseEntity<ResponseWrapper<Int?>>> {
         return try {
             Mono.just(
                 bucketService.createBucket(
                     bucketRequest = bucketRequest,
-                    userId = userId,
-                    boardId = boardId
+                    userId = userId
                 ).unwrap(ResponseStatus.CREATED)
             )
         } catch (e: Exception) {
@@ -45,8 +43,7 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
 
     @GetMapping
     fun getAllBuckets(
-        @RequestParam boardId: Int,
-        @RequestParam userId: Int
+        @RequestParam boardId: Int
     ): Mono<ResponseEntity<ResponseWrapper<List<BucketResponse>?>>> {
         return try {
             Mono.just(
