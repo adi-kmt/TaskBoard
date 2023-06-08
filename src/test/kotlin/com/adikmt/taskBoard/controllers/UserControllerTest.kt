@@ -2,32 +2,28 @@ package com.adikmt.taskBoard.controllers
 
 import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.LoginUserRequest
+import com.adikmt.taskBoard.dtos.requests.UserRequest
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.services.users.UserService
-import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.web.reactive.server.WebTestClient
-import reactor.core.publisher.Mono
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.util.LinkedMultiValueMap
+import reactor.test.StepVerifier
 
 @SpringBootTest
-@AutoConfigureWebTestClient
 class UserControllerTest {
-    @MockkBean(relaxed = true)
-    private lateinit var mockUserService: UserService
 
-//    @MockkBean(relaxed = true)
-//    private lateinit var mockUserRepository: UserRepository
+    private val mockUserService: UserService = mockk<UserService>()
 
-    private lateinit var userController: UserController
-
-    @Autowired
-    private lateinit var webTestClient: WebTestClient
+    private val userController: UserController = UserController(mockUserService)
 
     private val loginUserRequest = LoginUserRequest(userID = 0, userName = "Namessa", password = "Password")
+
+    private val userRequest = UserRequest(userName = "Namessa", password = "Password")
 
     private val userResponse = UserResponse(
         userId = 0,
@@ -36,47 +32,81 @@ class UserControllerTest {
         jwtToken = "kjnwdekjndewkjndwekjn.dewkjndewkjnwed.kjndwekjnwd",
     )
 
-//    @BeforeEach
-//    fun setup() {
-////        userController = UserController(mockUserService)
-//        webTestClient = WebTestClient.bindToController(userController).build()
-//    }
-
     @Test
-//    @WithMockUser
     fun `check login success`() {
-//        every { mockUserRepository.getUserByUserName(loginUserRequest.userID) }.returns(
-//            DbResponseWrapper.Success(userResponse)
-//        )
-
         every { mockUserService.login(loginUserRequest = loginUserRequest) }.returns(
             DbResponseWrapper.Success(data = userResponse)
         )
 
-        val response = webTestClient.post()
-            .uri("/api/login")
-            .body(Mono.just(loginUserRequest), LoginUserRequest::class.java)
-            .exchange()
+        val response = userController.login(loginUserRequest)
 
-//        val response = userController.login(loginUserRequest)
-
-        response.expectStatus().isOk
-
-//        StepVerifier.create(response).consumeNextWith { responseEntity->
-//            assert(responseEntity.statusCode == HttpStatus.OK)
-//            assert(responseEntity.body?.data == userResponse)
+        StepVerifier.create(response).consumeNextWith { responseEntity ->
+            assert(responseEntity.statusCode == HttpStatus.OK)
+            assert(responseEntity.body?.data == userResponse)
+        }.verifyComplete()
     }
-//    }
 
-//    @Test
-//    @WithMockUser
-//    fun `check logout success`() {
-//        val multiMap = LinkedMultiValueMap<String, String>().apply {
-//            this.add(HttpHeaders.AUTHORIZATION, "Bearer jhbajfhbasfjhbsafjhb")
-//        }
-//
-//        val response = userController.logout(header = HttpHeaders(multiMap))
-//
-//        assert(response.statusCode == HttpStatus.OK)
-//    }
+    @Test
+    fun `check login exception`() {
+        every { mockUserService.login(loginUserRequest = loginUserRequest) }.returns(
+            DbResponseWrapper.ServerException(exception = Exception("Exception"))
+        )
+
+        val response = userController.login(loginUserRequest)
+
+        StepVerifier.create(response).consumeNextWith { responseEntity ->
+            assert(responseEntity.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+            assert(responseEntity.body?.errorMessage == "Exception")
+        }.verifyComplete()
+    }
+
+    @Test
+    fun `check logout success`() {
+        val multiMap = LinkedMultiValueMap<String, String>().apply {
+            this.add(HttpHeaders.AUTHORIZATION, "Bearer jhbajfhbasfjhbsafjhb")
+        }
+
+        val response = userController.logout(header = HttpHeaders(multiMap))
+
+        assert(response.statusCode == HttpStatus.OK)
+    }
+
+    @Test
+    fun `check logout without bearer token for failure`() {
+        val multiMap = LinkedMultiValueMap<String, String>().apply {
+            this.add(HttpHeaders.AUTHORIZATION, "")
+        }
+
+        val response = userController.logout(header = HttpHeaders(multiMap))
+
+        assert(response.statusCode == HttpStatus.UNAUTHORIZED)
+    }
+
+    @Test
+    fun `check create user success`() {
+        every { mockUserService.registerUser(userRequest = userRequest) }.returns(
+            DbResponseWrapper.Success(data = 0)
+        )
+
+        val response = userController.register(userRequest)
+
+        StepVerifier.create(response).consumeNextWith { responseEntity ->
+            assert(responseEntity.statusCode == HttpStatus.CREATED)
+            assert(responseEntity.body?.data == 0)
+        }.verifyComplete()
+    }
+
+    @Test
+    fun `check create user exception`() {
+        every { mockUserService.registerUser(userRequest = userRequest) }.returns(
+            DbResponseWrapper.UserException(exception = Exception("Exception"))
+        )
+
+        val response = userController.register(userRequest)
+
+        StepVerifier.create(response).consumeNextWith { responseEntity ->
+            assert(responseEntity.statusCode == HttpStatus.BAD_REQUEST)
+            assert(responseEntity.body?.errorMessage == "Exception")
+        }.verifyComplete()
+    }
 }
