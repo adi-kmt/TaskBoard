@@ -4,7 +4,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
-sealed class DbResponseWrapper<T> {
+sealed class DbResponseWrapper<out T> {
     data class Success<T>(val data: T) : DbResponseWrapper<T>()
 
     data class DBException(val exception: Exception) : DbResponseWrapper<Nothing>()

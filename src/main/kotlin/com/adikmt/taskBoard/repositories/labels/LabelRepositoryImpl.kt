@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 @Repository
-class LabelRepositoryImpl(@Autowired private val context: DSLContext) : LabelRepository {
+class LabelRepositoryImpl @Autowired constructor(private val context: DSLContext) : LabelRepository {
 
-    override fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<out Int> {
+    override fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int> {
         return try {
             val labelId = context.insertInto<LabelsRecord>(LABELS)
                 .set(LABELS.LABEL_NAME, labelRequest.name)
@@ -32,7 +32,7 @@ class LabelRepositoryImpl(@Autowired private val context: DSLContext) : LabelRep
         }
     }
 
-    override fun allLabels(): DbResponseWrapper<out List<LabelResponse>> =
+    override fun allLabels(): DbResponseWrapper<List<LabelResponse>> =
         try {
             val labelList = context
                 .select(LABELS.ID, LABELS.LABEL_NAME, LABELS.LABEL_COLOUR)

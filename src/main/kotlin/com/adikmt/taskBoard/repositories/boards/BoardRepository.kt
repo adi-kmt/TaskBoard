@@ -14,9 +14,9 @@ interface BoardRepository {
      * 4. Get All Boards
      * 5. Get user role for particular board
      */
-    fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<out Int>
-    fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<out BoardResponse>
-    fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<out List<BoardResponse>>
-    fun getAllBoardsForUser(userId: Int): DbResponseWrapper<out List<BoardResponse>>
-    fun getUserRoleForBoard(userId: Int, boardId: Int): DbResponseWrapper<out UserRole>
+    fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int>
+    fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardResponse>
+    fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardResponse>>
+    fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardResponse>>
+    fun getUserRoleForBoard(userId: Int, boardId: Int): DbResponseWrapper<UserRole>
 }

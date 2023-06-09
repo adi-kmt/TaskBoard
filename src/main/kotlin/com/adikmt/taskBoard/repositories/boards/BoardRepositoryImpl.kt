@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 @Repository
-class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRepository {
+class BoardRepositoryImpl @Autowired constructor(private val context: DSLContext) : BoardRepository {
 
-    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<out Int> {
+    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int> {
         /** In one transaction :-
          * 1. Add board to boards table
          * 2. Add user to boards-user table with role
@@ -51,7 +51,7 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
         }
     }
 
-    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<out BoardResponse> {
+    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardResponse> {
         /** In one transaction :-
          * 1. Join b/w boards and boards-users
          * 2. where clause to get particular id
@@ -76,7 +76,7 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
         }
     }
 
-    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<out List<BoardResponse>> {
+    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardResponse>> {
         /** In one transaction :-
          * 1. Join b/w boards and boards-users
          * 2. where clause to get like board name
@@ -103,7 +103,7 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
         }
     }
 
-    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<out List<BoardResponse>> {
+    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardResponse>> {
         /** In one transaction :-
          * 1. Join b/w boards and boards-users
          * 2. where clause to get for particular user
@@ -130,7 +130,7 @@ class BoardRepositoryImpl(@Autowired private val context: DSLContext) : BoardRep
         }
     }
 
-    override fun getUserRoleForBoard(userId: Int, boardId: Int): DbResponseWrapper<out UserRole> {
+    override fun getUserRoleForBoard(userId: Int, boardId: Int): DbResponseWrapper<UserRole> {
         try {
             val role = context
                 .select(BOARDS_USER_ADDED.USER_ROLE)

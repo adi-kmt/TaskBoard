@@ -6,5 +6,6 @@ import jooq.generated.tables.records.UsersRecord
 fun UsersRecord.toUserResponse() = UserResponse(
     userId = this.id,
     userName = this.userName,
-    userPassword = this.userPassword
+    userPassword = this.userPassword,
+    jwtToken = ""
 )

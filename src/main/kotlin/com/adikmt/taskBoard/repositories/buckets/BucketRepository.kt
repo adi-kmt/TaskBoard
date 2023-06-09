@@ -10,6 +10,6 @@ interface BucketRepository {
      * 1. Create bucket (Only can be done by admin)
      * 2. Get All buckets
      */
-    fun createBucket(bucketRequest: BucketRequest, userId: Int): DbResponseWrapper<out Int>
-    fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<out List<BucketResponse>>
+    fun createBucket(bucketRequest: BucketRequest, userId: Int): DbResponseWrapper<Int>
+    fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<List<BucketResponse>>
 }

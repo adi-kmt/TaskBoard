@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 @Repository
-class BucketRepositoryImpl(@Autowired private val context: DSLContext) : BucketRepository {
-    override fun createBucket(bucketRequest: BucketRequest, userId: Int): DbResponseWrapper<out Int> {
+class BucketRepositoryImpl @Autowired constructor(private val context: DSLContext) : BucketRepository {
+    override fun createBucket(bucketRequest: BucketRequest, userId: Int): DbResponseWrapper<Int> {
         return try {
             val bucketId = context.insertInto<BucketsRecord>(BUCKETS)
                 .set(BUCKETS.BUCKET_TITLE, bucketRequest.title)
@@ -31,7 +31,7 @@ class BucketRepositoryImpl(@Autowired private val context: DSLContext) : BucketR
         }
     }
 
-    override fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<out List<BucketResponse>> {
+    override fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<List<BucketResponse>> {
         return try {
             val bucketsList = context
                 .select(BUCKETS.ID, BUCKETS.BOARD_ID, BUCKETS.BUCKET_TITLE)

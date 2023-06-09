@@ -14,9 +14,9 @@ import jooq.generated.tables.records.UsersRecord
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 
-class UserRepositoryImpl(@Autowired private val context: DSLContext) : UserRepository {
+class UserRepositoryImpl @Autowired constructor(private val context: DSLContext) : UserRepository {
 
-    override fun createUser(userRequest: UserRequest): DbResponseWrapper<out Int> {
+    override fun createUser(userRequest: UserRequest): DbResponseWrapper<Int> {
         return try {
             val userId = context.insertInto<UsersRecord>(USERS)
                 .set(USERS.USER_NAME, userRequest.userName)
@@ -36,7 +36,7 @@ class UserRepositoryImpl(@Autowired private val context: DSLContext) : UserRepos
         }
     }
 
-    override fun getUserByUserName(userId: Int): DbResponseWrapper<out UserResponse> {
+    override fun getUserByUserName(userId: Int): DbResponseWrapper<UserResponse> {
         return try {
             val user = context
                 .selectFrom<UsersRecord>(Users.Companion.USERS)
@@ -54,7 +54,7 @@ class UserRepositoryImpl(@Autowired private val context: DSLContext) : UserRepos
         }
     }
 
-    override fun addUserToBoard(userId: Int, boardId: Int, role: UserRole): DbResponseWrapper<out Boolean> {
+    override fun addUserToBoard(userId: Int, boardId: Int, role: UserRole): DbResponseWrapper<Boolean> {
         try {
             val id: Int? = context?.insertInto<BoardsUserAddedRecord>(BOARDS_USER_ADDED)
                 ?.set(BOARDS_USER_ADDED.BOARD_ID, boardId)

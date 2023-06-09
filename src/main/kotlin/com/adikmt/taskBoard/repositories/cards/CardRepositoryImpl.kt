@@ -19,8 +19,8 @@ import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.core.publisher.Flux
 
-class CardRepositoryImpl(@Autowired private val context: DSLContext) : CardRepository {
-    override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<out Int> {
+class CardRepositoryImpl @Autowired constructor(private val context: DSLContext) : CardRepository {
+    override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int> {
         return try {
             val cardId = context.insertInto<CardsRecord>(CARDS)
                 .set(CARDS.CARD_TITLE, cardRequest.title)
@@ -107,7 +107,7 @@ class CardRepositoryImpl(@Autowired private val context: DSLContext) : CardRepos
         }
     }
 
-    override fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<out Int> {
+    override fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Int> {
         return try {
             val id = context.update(CARDS)
                 .set(CARDS.IS_CARD_ARCHIVED, cardRequest.isCardArchived)
@@ -125,7 +125,7 @@ class CardRepositoryImpl(@Autowired private val context: DSLContext) : CardRepos
         }
     }
 
-    override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<out Int> {
+    override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Int> {
         return try {
             val id = context.update(CARDS)
                 .set(CARDS.BUCKET_ID, cardUpdateBucketRequest.bucketId)
@@ -141,7 +141,7 @@ class CardRepositoryImpl(@Autowired private val context: DSLContext) : CardRepos
         }
     }
 
-    override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<out Int> {
+    override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Int> {
         return try {
             val id = context.update(CARDS)
                 .set(CARDS.USER_ASSIGNED_ID, cardUpdateUserRequest.newUserId)
