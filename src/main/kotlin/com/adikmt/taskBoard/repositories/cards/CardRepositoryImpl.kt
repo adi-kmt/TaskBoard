@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.reactive.asFlow
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import reactor.core.publisher.Flux
 
 class CardRepositoryImpl @Autowired constructor(private val context: DSLContext) : CardRepository {
@@ -53,6 +55,8 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
                     .innerJoin(CARDS).on(BUCKETS.ID.eq(CARDS.BUCKET_ID))
                     .where(BOARDS.ID.eq(boardId).and(CARDS.IS_CARD_ARCHIVED.isFalse))
                     .orderBy(CARDS.CARD_END_DATE)
+                    .forUpdate()
+                    .skipLocked()
                     .fetchStreamInto(CardsRecord::class.java)
                     .map {
                         it.toCardResponse()
@@ -88,6 +92,8 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
                             .and(CARDS.USER_ASSIGNED_ID.eq(userId))
                     )
                     .orderBy(CARDS.CARD_END_DATE)
+                    .forUpdate()
+                    .skipLocked()
                     .fetchStreamInto(CardsRecord::class.java)
                     .map {
                         it.toCardResponse()
@@ -107,6 +113,10 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
         }
     }
 
+    @Retryable(
+        value = [org.jooq.exception.DataChangedException::class], backoff = Backoff(delay = 100),
+        maxAttempts = 2
+    )
     override fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Int> {
         return try {
             val id = context.update(CARDS)
@@ -125,6 +135,10 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
         }
     }
 
+    @Retryable(
+        value = [org.jooq.exception.DataChangedException::class], backoff = Backoff(delay = 100),
+        maxAttempts = 2
+    )
     override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Int> {
         return try {
             val id = context.update(CARDS)
@@ -141,6 +155,10 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
         }
     }
 
+    @Retryable(
+        value = [org.jooq.exception.DataChangedException::class], backoff = Backoff(delay = 100),
+        maxAttempts = 2
+    )
     override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Int> {
         return try {
             val id = context.update(CARDS)
