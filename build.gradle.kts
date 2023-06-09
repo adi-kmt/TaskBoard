@@ -19,19 +19,21 @@ repositories {
 }
 
 dependencies {
-	implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-	implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter")
 
-	implementation ("org.springframework.boot:spring-boot-starter-webflux")
-	implementation ("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-web")
 
-	compileOnly ("org.projectlombok:lombok")
-	annotationProcessor ("org.projectlombok:lombok")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
-	jooqGenerator ("mysql:mysql-connector-java:8.0.28")
-	implementation ("org.jooq:jooq-codegen")
-	implementation ("org.springframework.boot:spring-boot-starter-jdbc")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    jooqGenerator("mysql:mysql-connector-java:8.0.28")
+    implementation("org.jooq:jooq-codegen")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
 
 	implementation ("mysql:mysql-connector-java:8.0.28")
 	implementation ("org.flywaydb:flyway-core")

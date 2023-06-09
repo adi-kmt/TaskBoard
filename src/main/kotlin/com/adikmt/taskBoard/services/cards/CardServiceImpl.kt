@@ -9,6 +9,7 @@ import com.adikmt.taskBoard.dtos.requests.CardUpdateUserRequest
 import com.adikmt.taskBoard.dtos.responses.CardResponse
 import com.adikmt.taskBoard.repositories.boards.BoardRepository
 import com.adikmt.taskBoard.repositories.cards.CardRepository
+import com.adikmt.taskBoard.utils.SSEmitterBus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +20,9 @@ class CardServiceImpl @Autowired constructor(
     private val cardRepository: CardRepository,
     private val boardRepository: BoardRepository
 ) : CardService {
+
+    private val sseEmitter = SSEmitterBus
+
     override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int?> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId, cardRequest.boardId)
@@ -69,7 +73,9 @@ class CardServiceImpl @Autowired constructor(
 
     override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Int?> {
         return try {
-            cardRepository.updateCardBucket(cardUpdateBucketRequest)
+            val response = cardRepository.updateCardBucket(cardUpdateBucketRequest)
+            sseEmitter.emit(cardUpdateBucketRequest = cardUpdateBucketRequest)
+            response
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(exception = e)
         }
@@ -77,7 +83,9 @@ class CardServiceImpl @Autowired constructor(
 
     override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Int?> {
         return try {
-            cardRepository.assignCardToAnotherUser(cardUpdateUserRequest)
+            val response = cardRepository.assignCardToAnotherUser(cardUpdateUserRequest)
+            sseEmitter.emit(cardUpdateUserRequest = cardUpdateUserRequest)
+            response
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(exception = e)
         }
