@@ -13,14 +13,14 @@ import org.springframework.stereotype.Repository
 @Repository
 class LabelRepositoryImpl @Autowired constructor(private val context: DSLContext) : LabelRepository {
 
-    override fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int> {
+    override fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int?> {
         return try {
             val labelId = context.insertInto<LabelsRecord>(LABELS)
                 .set(LABELS.LABEL_NAME, labelRequest.name)
                 .set(LABELS.LABEL_COLOUR, labelRequest.colour)
                 .onDuplicateKeyIgnore()
-                .returningResult<Int>(LABELS.ID)
-                .execute()
+                .returning()
+                .fetchSingle().id
 
             DbResponseWrapper.Success(
                 data = labelId
@@ -32,10 +32,11 @@ class LabelRepositoryImpl @Autowired constructor(private val context: DSLContext
         }
     }
 
-    override fun allLabels(): DbResponseWrapper<List<LabelResponse>> =
+    override fun getAllLabels(): DbResponseWrapper<List<LabelResponse>> =
         try {
             val labelList = context
                 .select(LABELS.ID, LABELS.LABEL_NAME, LABELS.LABEL_COLOUR)
+                .from(LABELS)
                 .fetchStreamInto(LabelsRecord::class.java)
                 .toList()
                 .map {
