@@ -154,13 +154,13 @@ object MockObjects {
                 userId = 1,
                 userName = "jndfskjn",
                 userPassword = "kjnasdkjnads",
-                jwtToken = "kjndsfkjnsfd.kjndfskjnds.kjndfskjnsfd"
+                jwtToken = ""
             ),
             UserResponse(
                 userId = 2,
                 userName = "kmsdoakkjn",
                 userPassword = "ndsakjndakjnad",
-                jwtToken = "kjndsfkjnsfd.kjndfskjnds.kjndfskjnsfd"
+                jwtToken = ""
             )
         )
     }

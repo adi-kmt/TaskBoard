@@ -1,6 +1,6 @@
 package com.adikmt.taskBoard.dtos.responses
 
-class CardResponse(
+data class CardResponse(
     var cardId: Int?,
     var title: String?,
     var description: String?,

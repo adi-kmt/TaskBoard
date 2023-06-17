@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_name` varchar(100) NOT NULL,
-  `user_email` varchar(70) NOT NULL,
   `user_password` varchar(150) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `user_name` (`user_name`)

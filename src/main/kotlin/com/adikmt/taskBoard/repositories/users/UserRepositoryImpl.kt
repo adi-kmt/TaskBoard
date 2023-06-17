@@ -18,19 +18,23 @@ import org.springframework.stereotype.Repository
 @Repository
 class UserRepositoryImpl @Autowired constructor(private val context: DSLContext) : UserRepository {
 
-    override fun createUser(userRequest: UserRequest): DbResponseWrapper<Int> {
+    override fun createUser(userRequest: UserRequest): DbResponseWrapper<Int?> {
         return try {
             val userId = context.insertInto<UsersRecord>(USERS)
                 .set(USERS.USER_NAME, userRequest.userName)
                 .set(USERS.USER_PASSWORD, userRequest.password)
                 .onDuplicateKeyIgnore()
-                .returningResult<Int>(USERS.ID)
-                .execute()
+                .returning()
+                .fetchOne()?.id
 
 
-            DbResponseWrapper.Success(
-                data = userId
-            )
+            userId?.let {
+                DbResponseWrapper.Success(
+                    data = userId
+                )
+            } ?: run {
+                DbResponseWrapper.ServerException(Exception("Could not store data"))
+            }
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(
                 exception = Exception(e.message)
@@ -38,7 +42,7 @@ class UserRepositoryImpl @Autowired constructor(private val context: DSLContext)
         }
     }
 
-    override fun getUserByUserName(userId: Int): DbResponseWrapper<UserResponse> {
+    override fun getUserByUserId(userId: Int): DbResponseWrapper<UserResponse> {
         return try {
             val user = context
                 .selectFrom<UsersRecord>(Users.Companion.USERS)
