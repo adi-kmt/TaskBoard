@@ -12,14 +12,14 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class BucketRepositoryImpl @Autowired constructor(private val context: DSLContext) : BucketRepository {
-    override fun createBucket(bucketRequest: BucketRequest, userId: Int): DbResponseWrapper<Int> {
+    override fun createBucket(bucketRequest: BucketRequest): DbResponseWrapper<Int?> {
         return try {
             val bucketId = context.insertInto<BucketsRecord>(BUCKETS)
                 .set(BUCKETS.BUCKET_TITLE, bucketRequest.title)
                 .set(BUCKETS.BOARD_ID, bucketRequest.boardId)
                 .onDuplicateKeyIgnore()
-                .returningResult<Int>(BUCKETS.ID)
-                .execute()
+                .returning()
+                .fetchSingle().id
 
             DbResponseWrapper.Success(
                 data = bucketId
@@ -35,6 +35,7 @@ class BucketRepositoryImpl @Autowired constructor(private val context: DSLContex
         return try {
             val bucketsList = context
                 .select(BUCKETS.ID, BUCKETS.BOARD_ID, BUCKETS.BUCKET_TITLE)
+                .from(BUCKETS)
                 .where(BUCKETS.BOARD_ID.eq(boardId))
                 .fetchStreamInto(BucketsRecord::class.java)
                 .toList()
