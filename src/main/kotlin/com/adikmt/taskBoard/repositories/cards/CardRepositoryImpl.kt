@@ -7,7 +7,6 @@ import com.adikmt.taskBoard.dtos.requests.CardUpdateBucketRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateUserRequest
 import com.adikmt.taskBoard.dtos.responses.CardResponse
-import java.time.LocalDateTime
 import jooq.generated.tables.records.CardsRecord
 import jooq.generated.tables.references.BOARDS
 import jooq.generated.tables.references.BUCKETS
@@ -19,8 +18,11 @@ import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
+import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
+import java.time.LocalDateTime
 
+@Repository
 class CardRepositoryImpl @Autowired constructor(private val context: DSLContext) : CardRepository {
     override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int> {
         return try {

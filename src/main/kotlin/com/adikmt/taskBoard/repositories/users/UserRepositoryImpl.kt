@@ -13,7 +13,9 @@ import jooq.generated.tables.records.BoardsUserAddedRecord
 import jooq.generated.tables.records.UsersRecord
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Repository
 
+@Repository
 class UserRepositoryImpl @Autowired constructor(private val context: DSLContext) : UserRepository {
 
     override fun createUser(userRequest: UserRequest): DbResponseWrapper<Int> {
@@ -31,7 +33,7 @@ class UserRepositoryImpl @Autowired constructor(private val context: DSLContext)
             )
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(
-                exception = e
+                exception = Exception(e.message)
             )
         }
     }
@@ -49,7 +51,7 @@ class UserRepositoryImpl @Autowired constructor(private val context: DSLContext)
             )
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(
-                exception = e
+                exception = Exception(e.message)
             )
         }
     }
@@ -73,7 +75,7 @@ class UserRepositoryImpl @Autowired constructor(private val context: DSLContext)
 
         } catch (e: Exception) {
             return DbResponseWrapper.ServerException(
-                exception = e
+                exception = Exception(e.message)
             )
         }
     }
