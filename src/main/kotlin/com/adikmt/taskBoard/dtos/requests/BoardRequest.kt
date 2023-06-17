@@ -11,5 +11,5 @@ class BoardRequest(
     @NotNull
     val isStarred: Boolean = false,
     @NotNull
-    val role: UserRole = UserRole.ADMIN
+    val role: UserRole = UserRole.admin
 )

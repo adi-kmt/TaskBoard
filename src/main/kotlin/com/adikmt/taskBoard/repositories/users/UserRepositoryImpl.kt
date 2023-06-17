@@ -1,6 +1,5 @@
 package com.adikmt.taskBoard.repositories.users
 
-import com.adikmt.taskBoard.dtos.common.UserRole
 import com.adikmt.taskBoard.dtos.common.mappers.toUserResponse
 import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.UserRequest
@@ -25,7 +24,7 @@ class UserRepositoryImpl @Autowired constructor(private val context: DSLContext)
                 .set(USERS.USER_PASSWORD, userRequest.password)
                 .onDuplicateKeyIgnore()
                 .returning()
-                .fetchOne()?.id
+                .fetchSingle().id
 
 
             userId?.let {
@@ -60,15 +59,15 @@ class UserRepositoryImpl @Autowired constructor(private val context: DSLContext)
         }
     }
 
-    override fun addUserToBoard(userId: Int, boardId: Int, role: UserRole): DbResponseWrapper<Boolean> {
+    override fun addUserToBoard(userId: Int, boardId: Int): DbResponseWrapper<Boolean> {
         try {
-            val id: Int? = context?.insertInto<BoardsUserAddedRecord>(BOARDS_USER_ADDED)
-                ?.set(BOARDS_USER_ADDED.BOARD_ID, boardId)
-                ?.set(BOARDS_USER_ADDED.USER_ID, userId)
-                ?.set(BOARDS_USER_ADDED.USER_ROLE, BoardsUserAddedUserRole.valueOf(role.name))
-                ?.onDuplicateKeyIgnore()
-                ?.returningResult<Int>(BOARDS_USER_ADDED.BOARD_ID)
-                ?.execute()
+            val id: Int? = context.insertInto<BoardsUserAddedRecord>(BOARDS_USER_ADDED)
+                .set(BOARDS_USER_ADDED.BOARD_ID, boardId)
+                .set(BOARDS_USER_ADDED.USER_ID, userId)
+                .set(BOARDS_USER_ADDED.USER_ROLE, BoardsUserAddedUserRole.user)
+                .onDuplicateKeyIgnore()
+                .returningResult<Int>(BOARDS_USER_ADDED.BOARD_ID)
+                .execute()
             return id?.let {
                 DbResponseWrapper.Success(
                     data = true

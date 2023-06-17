@@ -5,7 +5,6 @@ import com.adikmt.taskBoard.dtos.common.mappers.toBoardResponse
 import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.BoardRequest
 import com.adikmt.taskBoard.dtos.responses.BoardResponse
-import java.util.concurrent.CompletableFuture
 import jooq.generated.enums.BoardsUserAddedUserRole
 import jooq.generated.tables.records.BoardsRecord
 import jooq.generated.tables.references.BOARDS
@@ -14,34 +13,39 @@ import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
+import java.util.concurrent.CompletableFuture
 
 @Repository
 class BoardRepositoryImpl @Autowired constructor(private val context: DSLContext) : BoardRepository {
 
-    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int> {
+    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int?> {
         /** In one transaction :-
          * 1. Add board to boards table
          * 2. Add user to boards-user table with role
          */
         try {
-            val data: CompletableFuture<out DbResponseWrapper<Int>> = context.transactionResultAsync { configuration ->
-                val boardId: Int = DSL.using(configuration)
+            val data: CompletableFuture<out DbResponseWrapper<Int?>> = context.transactionResultAsync { configuration ->
+                val boardId: Int? = DSL.using(configuration)
                     .insertInto(BOARDS)
                     .set(BOARDS.BOARD_TITLE, boardRequest.title)
                     .set(BOARDS.IS_BOARD_STARRED, boardRequest.isStarred)
                     .onDuplicateKeyIgnore()
-                    .returningResult<Int>(BOARDS.ID)
-                    .execute()
+                    .returning()
+                    .fetchSingle().id
 
                 DSL.using(configuration)
                     .insertInto(BOARDS_USER_ADDED)
                     .set(BOARDS_USER_ADDED.BOARD_ID, boardId)
                     .set(BOARDS_USER_ADDED.USER_ID, userId)
-                    .set(BOARDS_USER_ADDED.USER_ROLE, BoardsUserAddedUserRole.valueOf(boardRequest.role.name))
+                    .set(BOARDS_USER_ADDED.USER_ROLE, BoardsUserAddedUserRole.admin)
                     .onDuplicateKeyIgnore()
                     .execute()
 
-                return@transactionResultAsync DbResponseWrapper.Success(data = boardId)
+                return@transactionResultAsync boardId?.let {
+                    DbResponseWrapper.Success(data = boardId)
+                } ?: run {
+                    DbResponseWrapper.ServerException(exception = Exception("Data not stored in the table"))
+                }
             }.toCompletableFuture()
             return data.join()
         } catch (e: Exception) {

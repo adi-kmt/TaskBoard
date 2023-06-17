@@ -46,6 +46,4 @@ class UserRepositoryTest {
             throw (userResponse as DbResponseWrapper.ServerException).exception
         }
     }
-
-
 }
