@@ -12,7 +12,7 @@ fun setupDSL(): DSLContext {
     dataSource.apply {
         jdbcUrl = "jdbc:mysql://localhost:3306/testDB"
         username = "root"
-        password = ""
+        password = "Android=fun1"
         driverClassName = "com.mysql.cj.jdbc.Driver"
     }
 
