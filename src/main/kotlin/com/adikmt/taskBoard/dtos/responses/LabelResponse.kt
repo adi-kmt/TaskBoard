@@ -1,7 +1,7 @@
 package com.adikmt.taskBoard.dtos.responses
 
 data class LabelResponse(
-    var labelId: Int?,
-    var name: String?,
-    var colour: String?
+    val labelId: Int?,
+    val name: String?,
+    val colour: String?
 )

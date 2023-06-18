@@ -10,5 +10,6 @@ fun CardsRecord.toCardResponse() = CardResponse(
     startDate = this.cardStartDate.toString(),
     endDate = this.cardEndDate.toString(),
     isCardArchived = this.isCardArchived,
-    bucketId = this.bucketId
+    bucketId = this.bucketId,
+    labelId = this.labelId,
 )

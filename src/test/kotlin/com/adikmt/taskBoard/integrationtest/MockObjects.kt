@@ -2,9 +2,7 @@ package com.adikmt.taskBoard.integrationtest
 
 import com.adikmt.taskBoard.dtos.requests.*
 import com.adikmt.taskBoard.dtos.responses.*
-import java.time.Duration
-import java.time.Instant
-import java.util.*
+import java.time.LocalDateTime
 
 object MockObjects {
 
@@ -60,20 +58,33 @@ object MockObjects {
         val cardRequest1 = CardRequest(
             title = "kjnsdfkjnsf",
             description = "dsojnfdkjnskjnfsdkjnsdfkjnsfkjnweoijewonjfdskjnvsjnsv",
-            startDate = Date.from(Instant.now()).toString(),
-            endDate = Date.from(Instant.now() + Duration.ofDays(3L)).toString(),
+            startDate = LocalDateTime.now().toString(),
+            endDate = LocalDateTime.of(2023, 8, 20, 15, 40).toString(),
             isCardArchived = false,
             boardId = 1,
-            bucketId = 1
+            bucketId = 1,
+            labelId = 1
         )
         val cardRequest2 = CardRequest(
             title = "kjnomsfoijkjnsd",
             description = "dsojnfdkjnskjnfsdkjnsdfkjnsfkjnweoijewonjfdskjnvsjnsvmnmn mn n mn mnmnm",
-            startDate = Date.from(Instant.now() + Duration.ofDays(3L)).toString(),
-            endDate = Date.from(Instant.now() + Duration.ofDays(7L)).toString(),
+            startDate = LocalDateTime.of(2023, 8, 20, 15, 40).toString(),
+            endDate = LocalDateTime.of(2023, 9, 20, 15, 40).toString(),
             isCardArchived = false,
             boardId = 1,
-            bucketId = 2
+            bucketId = 2,
+            labelId = 2
+        )
+
+        val cardRequest3 = CardRequest(
+            title = "kjnomsfoijkjnsd",
+            description = "dsojnfdkjnskjnfsdkjnsdfkjnsfkjnweoijewonjfdskjnvsjnsvmnmn mn n mn mnmnm",
+            startDate = LocalDateTime.of(2023, 8, 20, 15, 40).toString(),
+            endDate = LocalDateTime.of(2023, 9, 20, 15, 40).toString(),
+            isCardArchived = false,
+            boardId = 3,
+            bucketId = 4,
+            labelId = 2
         )
 
         val cardResponseList = listOf(
@@ -81,24 +92,31 @@ object MockObjects {
                 cardId = 1,
                 title = "kjnsdfkjnsf",
                 description = "dsojnfdkjnskjnfsdkjnsdfkjnsfkjnweoijewonjfdskjnvsjnsv",
-                startDate = Date.from(Instant.now()).toString(),
-                endDate = Date.from(Instant.now() + Duration.ofDays(3L)).toString(),
+                startDate = LocalDateTime.now().toString(),
+                endDate = LocalDateTime.of(2023, 8, 20, 15, 40).toString(),
                 isCardArchived = false,
-                bucketId = 1
+                bucketId = 1,
+                labelId = 1
             ),
             CardResponse(
                 cardId = 2,
                 title = "kjnomsfoijkjnsd",
                 description = "dsojnfdkjnskjnfsdkjnsdfkjnsfkjnweoijewonjfdskjnvsjnsvmnmn mn n mn mnmnm",
-                startDate = Date.from(Instant.now() + Duration.ofDays(3L)).toString(),
-                endDate = Date.from(Instant.now() + Duration.ofDays(7L)).toString(),
+                startDate = LocalDateTime.of(2023, 8, 20, 15, 40).toString(),
+                endDate = LocalDateTime.of(2023, 9, 20, 15, 40).toString(),
                 isCardArchived = false,
-                bucketId = 2
+                bucketId = 2,
+                labelId = 2
             )
         )
 
         val cardUpdateUserRequest = CardUpdateUserRequest(
-            id = 1,
+            id = 2,
+            newUserId = 1
+        )
+
+        val cardUpdateUserRequestInvalid = CardUpdateUserRequest(
+            id = 3,
             newUserId = 1
         )
 
@@ -107,11 +125,24 @@ object MockObjects {
             bucketId = 1
         )
 
+        val cardUpdateBucketRequestInvalid = CardUpdateBucketRequest(
+            id = 3,
+            bucketId = 1
+        )
+
         val cardUpdateRequest = CardUpdateRequest(
-            id = 2,
-            description = "mmkdmoinsdokmkmokmsd kjdnskjnsdkjn",
-            endDate = Date.from(Instant.now() + Duration.ofDays(6L)).toString(),
-            isCardArchived = true
+            id = 1,
+            description = "mmkdmoinsdokmkmokmsd kjdnskjnsdkjn vskjnkv",
+            endDate = LocalDateTime.of(2023, 11, 25, 18, 40).toString(),
+            isCardArchived = false,
+            labelId = 1
+        )
+        val cardUpdateRequestInvalid = CardUpdateRequest(
+            id = 4,
+            description = "mmkdmoinsdokmkmokmsd kjdnskjnsdkjn vskjnkv",
+            endDate = LocalDateTime.of(2023, 11, 25, 18, 40).toString(),
+            isCardArchived = false,
+            labelId = 1
         )
     }
 

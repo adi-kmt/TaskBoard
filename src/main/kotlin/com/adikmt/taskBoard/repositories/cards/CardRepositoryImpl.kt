@@ -24,7 +24,7 @@ import java.time.LocalDateTime
 
 @Repository
 class CardRepositoryImpl @Autowired constructor(private val context: DSLContext) : CardRepository {
-    override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int> {
+    override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int?> {
         return try {
             val cardId = context.insertInto<CardsRecord>(CARDS)
                 .set(CARDS.CARD_TITLE, cardRequest.title)
@@ -32,11 +32,12 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
                 .set(CARDS.IS_CARD_ARCHIVED, cardRequest.isCardArchived)
                 .set(CARDS.BUCKET_ID, cardRequest.bucketId)
                 .set(CARDS.USER_ASSIGNED_ID, userId)
+                .set(CARDS.LABEL_ID, cardRequest.labelId)
                 .set(CARDS.CARD_START_DATE, LocalDateTime.parse(cardRequest.startDate))
                 .set(CARDS.CARD_END_DATE, LocalDateTime.parse(cardRequest.endDate))
                 .onDuplicateKeyIgnore()
-                .returningResult<Int>(CARDS.ID)
-                .execute()
+                .returning()
+                .fetchSingle().id
 
             DbResponseWrapper.Success(
                 data = cardId
@@ -119,17 +120,27 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
         value = [org.jooq.exception.DataChangedException::class], backoff = Backoff(delay = 100),
         maxAttempts = 2
     )
-    override fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Int> {
+    override fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Boolean> {
         return try {
-            val id = context.update(CARDS)
-                .set(CARDS.IS_CARD_ARCHIVED, cardRequest.isCardArchived)
-                .set(CARDS.CARD_DESC, cardRequest.description)
-                .set(CARDS.CARD_END_DATE, LocalDateTime.parse(cardRequest.endDate))
+
+            val updateRecord = CardsRecord().apply {
+                cardDesc = cardRequest.description
+                isCardArchived = cardRequest.isCardArchived
+                cardEndDate = LocalDateTime.parse(cardRequest.endDate)
+                labelId = cardRequest.labelId
+            }
+
+            val hasCardBeenUpdated = context
+                .update(CARDS)
+                .set(updateRecord)
                 .where(CARDS.ID.eq(cardRequest.id))
-                .returningResult<Int>(CARDS.ID)
                 .execute()
 
-            DbResponseWrapper.Success(data = id)
+            if (hasCardBeenUpdated == 1) {
+                DbResponseWrapper.Success(data = true)
+            } else {
+                DbResponseWrapper.UserException(Exception("No card found to update"))
+            }
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(
                 exception = e
@@ -138,18 +149,21 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
     }
 
     @Retryable(
-        value = [org.jooq.exception.DataChangedException::class], backoff = Backoff(delay = 100),
+        value = [org.jooq.exception.DataChangedException::class], backoff = Backoff(delay = 30000),
         maxAttempts = 2
     )
-    override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Int> {
+    override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Boolean> {
         return try {
-            val id = context.update(CARDS)
+            val hasCardBeenUpdated = context.update(CARDS)
                 .set(CARDS.BUCKET_ID, cardUpdateBucketRequest.bucketId)
                 .where(CARDS.ID.eq(cardUpdateBucketRequest.id))
-                .returningResult<Int>(CARDS.ID)
                 .execute()
 
-            DbResponseWrapper.Success(data = id)
+            if (hasCardBeenUpdated == 1) {
+                DbResponseWrapper.Success(data = true)
+            } else {
+                DbResponseWrapper.UserException(Exception("No card found to update"))
+            }
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(
                 exception = e
@@ -161,15 +175,18 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
         value = [org.jooq.exception.DataChangedException::class], backoff = Backoff(delay = 100),
         maxAttempts = 2
     )
-    override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Int> {
+    override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Boolean> {
         return try {
-            val id = context.update(CARDS)
+            val hasCardBeenUpdated = context.update(CARDS)
                 .set(CARDS.USER_ASSIGNED_ID, cardUpdateUserRequest.newUserId)
                 .where(CARDS.ID.eq(cardUpdateUserRequest.id))
-                .returningResult<Int>(CARDS.ID)
                 .execute()
 
-            DbResponseWrapper.Success(data = id)
+            if (hasCardBeenUpdated == 1) {
+                DbResponseWrapper.Success(data = true)
+            } else {
+                DbResponseWrapper.UserException(Exception("No card found to update"))
+            }
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(
                 exception = e
