@@ -8,24 +8,20 @@ object MockObjects {
 
     object Board {
         val boardRequest1 = BoardRequest(
-            title = "jnksfdkjn",
-            isStarred = false
+            title = "jnksfdkjn"
         )
         val boardRequest2 = BoardRequest(
-            title = "jnksfdkjkjnfdknn",
-            isStarred = false
+            title = "jnksfdkjkjnfdknn"
         )
 
         val boardResponseList = listOf(
             BoardResponse(
                 boardId = 1,
-                title = "jnksfdkjn",
-                isStarred = false
+                title = "jnksfdkjn"
             ),
             BoardResponse(
                 boardId = 2,
-                title = "jnksfdkjkjnfdknn",
-                isStarred = false
+                title = "jnksfdkjkjnfdknn"
             )
         )
     }

@@ -28,7 +28,6 @@ class BoardRepositoryImpl @Autowired constructor(private val context: DSLContext
                 val boardId: Int? = DSL.using(configuration)
                     .insertInto(BOARDS)
                     .set(BOARDS.BOARD_TITLE, boardRequest.title)
-                    .set(BOARDS.IS_BOARD_STARRED, boardRequest.isStarred)
                     .onDuplicateKeyIgnore()
                     .returning()
                     .fetchSingle().id

@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS `users` (
 CREATE TABLE IF NOT EXISTS `boards` (
   `id` int NOT NULL AUTO_INCREMENT,
   `board_title` varchar(70) NOT NULL,
-  `is_board_starred` bit DEFAULT 0 NOT NULL,
   PRIMARY KEY (`id`),
   INDEX (`board_title`)
 ) ENGINE=InnoDB;
