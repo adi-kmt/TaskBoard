@@ -11,5 +11,5 @@ interface BucketRepository {
      * 2. Get All buckets
      */
     fun createBucket(bucketRequest: BucketRequest): DbResponseWrapper<Int?>
-    fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<List<BucketResponse>?>
+    fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<List<BucketResponse>>
 }

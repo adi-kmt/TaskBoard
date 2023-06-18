@@ -3,10 +3,10 @@ package com.adikmt.taskBoard.dtos.responses
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class UserResponse(
-    val userId: Int = 0,
-    val userName: String,
-    val userPassword: String,
+data class UserResponse(
+    val userId: Int?,
+    val userName: String?,
+    val userPassword: String?,
     val jwtToken: String
 ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {

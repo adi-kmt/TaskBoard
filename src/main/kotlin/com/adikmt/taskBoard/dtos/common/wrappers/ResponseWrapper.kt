@@ -6,6 +6,6 @@ class ResponseWrapper<T>(
     val errorMessage: String? = null
 )
 
-enum class ResponseStatus{
+enum class ResponseStatus {
     CREATED, OK, ACCEPTED
 }

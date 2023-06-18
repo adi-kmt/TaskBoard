@@ -20,5 +20,7 @@ class CardRequest(
     @NotNull
     val boardId: Int,
     @NotNull
+    val labelId: Int,
+    @NotNull
     val bucketId: Int
 )

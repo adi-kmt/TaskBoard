@@ -1,11 +1,12 @@
 package com.adikmt.taskBoard.dtos.responses
 
-class CardResponse(
-    var cardId: Int,
-    var title: String?,
-    var description: String?,
-    var startDate: String?,
-    var endDate: String?,
-    var isCardArchived: Boolean = false,
-    var bucketId: Int
+data class CardResponse(
+    val cardId: Int?,
+    val title: String?,
+    val description: String?,
+    val startDate: String?,
+    val endDate: String?,
+    val isCardArchived: Boolean?,
+    val bucketId: Int?,
+    val labelId: Int?
 )

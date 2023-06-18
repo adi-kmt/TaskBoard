@@ -12,5 +12,5 @@ interface LabelRepository {
      */
     fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int?>
 
-    fun getAllLabels(): DbResponseWrapper<List<LabelResponse>?>
+    fun getAllLabels(): DbResponseWrapper<List<LabelResponse>>
 }

@@ -9,7 +9,5 @@ class BoardRequest(
     @Size(max = 30, min = 5, message = "Enter a board name with character size between 5 and 30")
     val title: String,
     @NotNull
-    val isStarred: Boolean = false,
-    @NotNull
-    val role: UserRole = UserRole.ADMIN
+    val role: UserRole = UserRole.admin
 )
