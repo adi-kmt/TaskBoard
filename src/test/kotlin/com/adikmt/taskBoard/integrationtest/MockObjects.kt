@@ -91,9 +91,9 @@ object MockObjects {
             CardResponse(
                 cardId = 1,
                 title = "kjnsdfkjnsf",
-                description = "dsojnfdkjnskjnfsdkjnsdfkjnsfkjnweoijewonjfdskjnvsjnsv",
-                startDate = LocalDateTime.now().toString(),
-                endDate = LocalDateTime.of(2023, 8, 20, 15, 40).toString(),
+                description = "mmkdmoinsdokmkmokmsd kjdnskjnsdkjn vskjnkv",
+                startDate = LocalDateTime.of(2023, 6, 17, 22, 39, 33).toString(),
+                endDate = LocalDateTime.of(2023, 11, 25, 18, 40).toString(),
                 isCardArchived = false,
                 bucketId = 1,
                 labelId = 1
@@ -101,12 +101,12 @@ object MockObjects {
             CardResponse(
                 cardId = 2,
                 title = "kjnomsfoijkjnsd",
-                description = "dsojnfdkjnskjnfsdkjnsdfkjnsfkjnweoijewonjfdskjnvsjnsvmnmn mn n mn mnmnm",
+                description = "mmkdmoinsdokmkmokmsd kjdnskjnsdkjn",
                 startDate = LocalDateTime.of(2023, 8, 20, 15, 40).toString(),
-                endDate = LocalDateTime.of(2023, 9, 20, 15, 40).toString(),
+                endDate = LocalDateTime.of(2023, 6, 25, 18, 40).toString(),
                 isCardArchived = false,
-                bucketId = 2,
-                labelId = 2
+                bucketId = 1,
+                labelId = 1
             )
         )
 

@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `cards` (
   `card_end_date` datetime NOT NULL,
   `is_card_archived` bit DEFAULT 0 NOT NULL,
   `bucket_id` int NOT NULL,
-  `label_id` int,
+  `label_id` int NOT NULL,
   `modified` timestamp NOT NULL DEFAULT NOW(),
   `user_assigned_id` int NOT NULL,
 

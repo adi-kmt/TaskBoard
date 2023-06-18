@@ -11,16 +11,13 @@ import jooq.generated.tables.records.CardsRecord
 import jooq.generated.tables.references.BOARDS
 import jooq.generated.tables.references.BUCKETS
 import jooq.generated.tables.references.CARDS
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.reactive.asFlow
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Repository
-import reactor.core.publisher.Flux
 import java.time.LocalDateTime
+import java.util.stream.Collectors
 
 @Repository
 class CardRepositoryImpl @Autowired constructor(private val context: DSLContext) : CardRepository {
@@ -49,70 +46,56 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
         }
     }
 
-    override fun getAllCards(boardId: Int): Flow<DbResponseWrapper<CardResponse>> {
+    override fun getAllCards(boardId: Int): List<DbResponseWrapper<CardResponse>> {
         return try {
-            Flux.from<DbResponseWrapper<CardResponse>> {
-                context.select()
-                    .from(BOARDS)
-                    .innerJoin(BUCKETS).on(BOARDS.ID.eq(BUCKETS.BOARD_ID))
-                    .innerJoin(CARDS).on(BUCKETS.ID.eq(CARDS.BUCKET_ID))
-                    .where(BOARDS.ID.eq(boardId).and(CARDS.IS_CARD_ARCHIVED.isFalse))
-                    .orderBy(CARDS.CARD_END_DATE)
-                    .forUpdate()
-                    .skipLocked()
-                    .fetchStreamInto(CardsRecord::class.java)
-                    .map {
-                        it.toCardResponse()
-                    }
-                    .map { card ->
-                        DbResponseWrapper.Success(data = card)
-                    }
-            }
-                .distinctUntilChanged()
-                .asFlow()
+            context.select()
+                .from(BOARDS)
+                .innerJoin(BUCKETS).on(BOARDS.ID.eq(BUCKETS.BOARD_ID))
+                .innerJoin(CARDS).on(BUCKETS.ID.eq(CARDS.BUCKET_ID))
+                .where(BOARDS.ID.eq(boardId).and(CARDS.IS_CARD_ARCHIVED.isFalse))
+                .orderBy(CARDS.CARD_END_DATE)
+                .forUpdate()
+                .fetchStreamInto(CardsRecord::class.java)
+                .collect(Collectors.toList())
+                .map {
+                    DbResponseWrapper.Success(it.toCardResponse())
+                }
         } catch (e: Exception) {
-            flow {
+            listOf(
                 DbResponseWrapper.ServerException(
                     exception = e
                 )
-            }
+            )
         }
     }
 
     override fun getAllCardsAssignedToUserById(
         userId: Int,
         boardId: Int
-    ): Flow<DbResponseWrapper<CardResponse>> {
+    ): List<DbResponseWrapper<CardResponse>> {
         return try {
-            Flux.from<DbResponseWrapper<CardResponse>> {
-                context.select()
-                    .from(BOARDS)
-                    .innerJoin(BUCKETS).on(BOARDS.ID.eq(BUCKETS.BOARD_ID))
-                    .innerJoin(CARDS).on(BUCKETS.ID.eq(CARDS.BUCKET_ID))
-                    .where(
-                        BOARDS.ID.eq(boardId)
-                            .and(CARDS.IS_CARD_ARCHIVED.isFalse)
-                            .and(CARDS.USER_ASSIGNED_ID.eq(userId))
-                    )
-                    .orderBy(CARDS.CARD_END_DATE)
-                    .forUpdate()
-                    .skipLocked()
-                    .fetchStreamInto(CardsRecord::class.java)
-                    .map {
-                        it.toCardResponse()
-                    }
-                    .map { card ->
-                        DbResponseWrapper.Success(data = card)
-                    }
-            }
-                .distinctUntilChanged()
-                .asFlow()
+            context.select()
+                .from(BOARDS)
+                .innerJoin(BUCKETS).on(BOARDS.ID.eq(BUCKETS.BOARD_ID))
+                .innerJoin(CARDS).on(BUCKETS.ID.eq(CARDS.BUCKET_ID))
+                .where(
+                    BOARDS.ID.eq(boardId)
+                        .and(CARDS.IS_CARD_ARCHIVED.isFalse)
+                        .and(CARDS.USER_ASSIGNED_ID.eq(userId))
+                )
+                .orderBy(CARDS.CARD_END_DATE)
+                .forUpdate()
+                .fetchStreamInto(CardsRecord::class.java)
+                .collect(Collectors.toList())
+                .map {
+                    DbResponseWrapper.Success(it.toCardResponse())
+                }
         } catch (e: Exception) {
-            flow {
+            listOf(
                 DbResponseWrapper.ServerException(
                     exception = e
                 )
-            }
+            )
         }
     }
 

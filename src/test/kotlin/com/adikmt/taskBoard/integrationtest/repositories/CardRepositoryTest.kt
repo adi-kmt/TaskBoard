@@ -28,16 +28,6 @@ class CardRepositoryTest {
         cardRepository = CardRepositoryImpl(context)
     }
 
-    /**
-     * 1 Create card
-     * 2 Create card in board without bucket
-     * 3 Get all cards valid/invalid
-     * 4 Get all cards by user valid/invalid
-     * 5. Update card
-     * 6. Update card bucket
-     * 7. Update card assignee
-     */
-
     @Test
     fun `Create card`() {
         val cardResponse1 = cardRepository.createCard(MockObjects.Card.cardRequest1, userId = 1)
@@ -106,5 +96,37 @@ class CardRepositoryTest {
         }
     }
 
+    @Test
+    fun `get all cards valid`() {
+        val cardResponse = cardRepository.getAllCards(boardId = 1)
+        cardResponse.forEachIndexed { index, card ->
+            when (index) {
+                0 -> assert(card == DbResponseWrapper.Success(MockObjects.Card.cardResponseList[1]))
+                1 -> assert(card == DbResponseWrapper.Success(MockObjects.Card.cardResponseList.first()))
+            }
+        }
+    }
 
+    @Test
+    fun `get all cards for invalid board`() {
+        val cardResponse = cardRepository.getAllCards(boardId = 3)
+        assert(cardResponse.isEmpty())
+    }
+
+    @Test
+    fun `get all cards for board and user assigned`() {
+        val cardResponse = cardRepository.getAllCardsAssignedToUserById(userId = 1, boardId = 1)
+        cardResponse.forEachIndexed { index, card ->
+            when (index) {
+                0 -> assert(card == DbResponseWrapper.Success(MockObjects.Card.cardResponseList[1]))
+                1 -> assert(card == DbResponseWrapper.Success(MockObjects.Card.cardResponseList.first()))
+            }
+        }
+    }
+
+    @Test
+    fun `get all cards by user for invalid data`() {
+        val cardResponse = cardRepository.getAllCardsAssignedToUserById(userId = 3, boardId = 2)
+        assert(cardResponse.isEmpty())
+    }
 }
