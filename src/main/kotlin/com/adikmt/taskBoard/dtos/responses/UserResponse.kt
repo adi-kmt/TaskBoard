@@ -6,8 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails
 data class UserResponse(
     val userId: Int?,
     val userName: String?,
-    val userPassword: String?,
-    val jwtToken: String
+    val userPassword: String?
 ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf()

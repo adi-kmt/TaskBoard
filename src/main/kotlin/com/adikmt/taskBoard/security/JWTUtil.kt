@@ -5,11 +5,10 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import org.springframework.stereotype.Component
 import java.security.Key
 import java.util.*
 import java.util.function.Function
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.stereotype.Component
 
 @Component
 class JWTUtil {
@@ -52,18 +51,18 @@ class JWTUtil {
             .setSigningKey(getSignInKey()).build().parseClaimsJws(token).body
     }
 
-    fun generateToken(userDetails: UserDetails): String? {
-        return generateToken(HashMap(), userDetails)
+    fun generateToken(userName: String): String {
+        return generateToken(HashMap(), userName)
     }
 
     fun generateToken(
         extraClaims: Map<String?, Any?>?,
-        userDetails: UserDetails
-    ): String? {
+        userName: String
+    ): String {
         return Jwts
             .builder()
             .setClaims(extraClaims)
-            .setSubject(userDetails.username)
+            .setSubject(userName)
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 24))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)

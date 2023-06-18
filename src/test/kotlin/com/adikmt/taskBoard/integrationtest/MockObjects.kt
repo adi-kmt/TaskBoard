@@ -180,14 +180,12 @@ object MockObjects {
             UserResponse(
                 userId = 1,
                 userName = "jndfskjn",
-                userPassword = "kjnasdkjnads",
-                jwtToken = ""
+                userPassword = "kjnasdkjnads"
             ),
             UserResponse(
                 userId = 2,
                 userName = "kmsdoakkjn",
-                userPassword = "ndsakjndakjnad",
-                jwtToken = ""
+                userPassword = "ndsakjndakjnad"
             )
         )
     }

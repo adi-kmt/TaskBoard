@@ -3,6 +3,7 @@ package com.adikmt.taskBoard.services.users
 import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.LoginUserRequest
 import com.adikmt.taskBoard.dtos.requests.UserRequest
+import com.adikmt.taskBoard.dtos.responses.JWTUserResponse
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.repositories.users.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,7 +35,7 @@ class UserServiceImpl
         }
     }
 
-    override fun registerUser(userRequest: UserRequest): DbResponseWrapper<Int> {
+    override fun registerUser(userRequest: UserRequest): DbResponseWrapper<JWTUserResponse> {
         return try {
             userRepository.createUser(userRequest)
         } catch (e: Exception) {

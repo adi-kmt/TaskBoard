@@ -1,8 +1,10 @@
 package com.adikmt.taskBoard.repositories.users
 
+import com.adikmt.taskBoard.dtos.common.mappers.jetUserResponse
 import com.adikmt.taskBoard.dtos.common.mappers.toUserResponse
 import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.UserRequest
+import com.adikmt.taskBoard.dtos.responses.JWTUserResponse
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 import jooq.generated.enums.BoardsUserAddedUserRole
 import jooq.generated.tables.BoardsUserAdded.Companion.BOARDS_USER_ADDED
@@ -17,7 +19,7 @@ import org.springframework.stereotype.Repository
 @Repository
 class UserRepositoryImpl @Autowired constructor(private val context: DSLContext) : UserRepository {
 
-    override fun createUser(userRequest: UserRequest): DbResponseWrapper<Int> {
+    override fun createUser(userRequest: UserRequest): DbResponseWrapper<JWTUserResponse> {
         return try {
             val userId = context.insertInto<UsersRecord>(USERS)
                 .set(USERS.USER_NAME, userRequest.userName)
@@ -29,7 +31,7 @@ class UserRepositoryImpl @Autowired constructor(private val context: DSLContext)
 
             userId?.let {
                 DbResponseWrapper.Success(
-                    data = userId
+                    data = jetUserResponse(userId)
                 )
             } ?: run {
                 DbResponseWrapper.ServerException(Exception("Could not store data"))

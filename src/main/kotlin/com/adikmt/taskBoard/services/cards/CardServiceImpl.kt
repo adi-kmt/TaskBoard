@@ -29,7 +29,6 @@ class CardServiceImpl @Autowired constructor(
                         DbResponseWrapper.UserException(exception = Exception("Non admins can't add cards to board'"))
                     }
                 }
-
                 else -> DbResponseWrapper.UserException(exception = Exception("Something went wrong"))
             }
         } catch (e: Exception) {

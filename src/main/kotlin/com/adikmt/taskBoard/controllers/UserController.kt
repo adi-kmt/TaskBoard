@@ -5,6 +5,7 @@ import com.adikmt.taskBoard.dtos.common.wrappers.ResponseWrapper
 import com.adikmt.taskBoard.dtos.common.wrappers.unwrap
 import com.adikmt.taskBoard.dtos.requests.LoginUserRequest
 import com.adikmt.taskBoard.dtos.requests.UserRequest
+import com.adikmt.taskBoard.dtos.responses.JWTUserResponse
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.services.users.UserService
 import jakarta.validation.Valid
@@ -31,7 +32,7 @@ class UserController @Autowired constructor(private val userService: UserService
     }
 
     @PostMapping("/register")
-    fun register(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<ResponseWrapper<Int>> {
+    fun register(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<ResponseWrapper<JWTUserResponse>> {
         return try {
             userService.registerUser(userRequest).unwrap(successResponseStatus = ResponseStatus.CREATED)
         } catch (e: Exception) {

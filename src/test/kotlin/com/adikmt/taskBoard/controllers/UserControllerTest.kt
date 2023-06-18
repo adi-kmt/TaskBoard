@@ -29,7 +29,6 @@ class UserControllerTest {
         userId = 0,
         userName = "Namessa",
         userPassword = "Password",
-        jwtToken = "kjnwdekjndewkjndwekjn.dewkjndewkjnwed.kjndwekjnwd",
     )
 
     @Test
