@@ -13,7 +13,7 @@ data class UserResponse(
         return mutableListOf()
     }
 
-    override fun getPassword(): String =
+    override fun getPassword(): String? =
         this.userPassword
 
     override fun getUsername(): String =

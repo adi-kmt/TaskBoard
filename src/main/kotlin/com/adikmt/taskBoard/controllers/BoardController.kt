@@ -10,14 +10,7 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/board")
@@ -27,35 +20,29 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     fun createBoard(
         @Valid @RequestBody boardRequest: BoardRequest,
         @RequestParam userId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<Int>>> {
+    ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
-            Mono.just(
-                boardService.createBoard(
-                    boardRequest = boardRequest,
-                    userId = userId
-                ).unwrap(successResponseStatus = ResponseStatus.CREATED)
-            )
+            boardService.createBoard(
+                boardRequest = boardRequest,
+                userId = userId
+            ).unwrap(successResponseStatus = ResponseStatus.CREATED)
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
+
         }
     }
 
     @GetMapping
     fun getAllBoards(
         @RequestParam userId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<List<BoardResponse>?>>> {
+    ): ResponseEntity<ResponseWrapper<List<BoardResponse>>> {
         return try {
-            Mono.just(
-                boardService.getAllBoardsForUser(
-                    userId = userId
-                ).unwrap()
-            )
+            boardService.getAllBoardsForUser(
+                userId = userId
+            ).unwrap()
+
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -63,18 +50,16 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     fun getBoardById(
         @PathVariable id: Int,
         @RequestParam userId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<BoardResponse?>>> {
+    ): ResponseEntity<ResponseWrapper<BoardResponse>> {
         return try {
-            Mono.just(
-                boardService.getBoardById(
-                    boardId = id,
-                    userId = userId
-                ).unwrap()
-            )
+            boardService.getBoardById(
+                boardId = id,
+                userId = userId
+            ).unwrap()
+
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
+
         }
     }
 
@@ -82,18 +67,14 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     fun searchBoardByName(
         @PathVariable boardName: String,
         @RequestParam userId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<List<BoardResponse>?>>> {
+    ): ResponseEntity<ResponseWrapper<List<BoardResponse>>> {
         return try {
-            Mono.just(
-                boardService.searchBoardByName(
-                    boardName = boardName,
-                    userId = userId
-                ).unwrap()
-            )
+            boardService.searchBoardByName(
+                boardName = boardName,
+                userId = userId
+            ).unwrap()
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 }

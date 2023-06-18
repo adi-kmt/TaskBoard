@@ -11,22 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/api/labels")
 class LabelController @Autowired constructor(private val labelService: LabelService) {
 
     @GetMapping
-    fun getAllLabels(): Mono<ResponseEntity<ResponseWrapper<List<LabelResponse>>>> {
+    fun getAllLabels(): ResponseEntity<ResponseWrapper<List<LabelResponse>>> {
         return try {
-            Mono.just(
-                labelService.getAllLabels().unwrap()
-            )
+            labelService.getAllLabels().unwrap()
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -35,19 +30,15 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
         @Valid @RequestBody labelRequest: LabelRequest,
         @RequestParam userId: Int,
         @RequestParam boardId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<Int>>> {
+    ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
-            Mono.just(
-                labelService.createLabel(
-                    labelRequest = labelRequest,
-                    userId = userId,
-                    boardId = boardId
-                ).unwrap(successResponseStatus = ResponseStatus.CREATED)
-            )
+            labelService.createLabel(
+                labelRequest = labelRequest,
+                userId = userId,
+                boardId = boardId
+            ).unwrap(successResponseStatus = ResponseStatus.CREATED)
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 }

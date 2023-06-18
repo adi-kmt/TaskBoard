@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/api/cards")
@@ -26,16 +25,12 @@ class CardController @Autowired constructor(private val cardService: CardService
     fun createCard(
         @Valid @RequestBody cardRequest: CardRequest,
         @RequestParam userId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<Int>>> {
+    ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
-            Mono.just(
-                cardService.createCard(cardRequest = cardRequest, userId = userId)
-                    .unwrap(successResponseStatus = ResponseStatus.CREATED)
-            )
+            cardService.createCard(cardRequest = cardRequest, userId = userId)
+                .unwrap(successResponseStatus = ResponseStatus.CREATED)
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -68,17 +63,13 @@ class CardController @Autowired constructor(private val cardService: CardService
     fun updateCard(
         @Valid @RequestBody cardUpdateRequest: CardUpdateRequest,
         @RequestParam userId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<Boolean>>> {
+    ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
-            Mono.just(
-                cardService.updateCardDetails(
-                    cardRequest = cardUpdateRequest
-                ).unwrap()
-            )
+            cardService.updateCardDetails(
+                cardRequest = cardUpdateRequest
+            ).unwrap()
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -86,17 +77,13 @@ class CardController @Autowired constructor(private val cardService: CardService
     fun updateCardBucket(
         @Valid @RequestBody cardUpdateBucketRequest: CardUpdateBucketRequest,
         @RequestParam userId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<Boolean>>> {
+    ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
-            Mono.just(
-                cardService.updateCardBucket(
-                    cardUpdateBucketRequest = cardUpdateBucketRequest
-                ).unwrap()
-            )
+            cardService.updateCardBucket(
+                cardUpdateBucketRequest = cardUpdateBucketRequest
+            ).unwrap()
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -104,17 +91,13 @@ class CardController @Autowired constructor(private val cardService: CardService
     fun assignCardToAnotherUser(
         @Valid @RequestBody cardUpdateUserRequest: CardUpdateUserRequest,
         @RequestParam userId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<Boolean>>> {
+    ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
-            Mono.just(
-                cardService.assignCardToAnotherUser(
-                    cardUpdateUserRequest = cardUpdateUserRequest
-                ).unwrap()
-            )
+            cardService.assignCardToAnotherUser(
+                cardUpdateUserRequest = cardUpdateUserRequest
+            ).unwrap()
         } catch (e: Exception) {
-            Mono.just(
-                ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
-            )
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 }
