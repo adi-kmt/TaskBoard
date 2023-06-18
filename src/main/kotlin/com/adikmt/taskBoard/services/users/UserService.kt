@@ -8,5 +8,5 @@ import com.adikmt.taskBoard.dtos.responses.UserResponse
 interface UserService {
     fun login(loginUserRequest: LoginUserRequest): DbResponseWrapper<UserResponse>
 
-    fun registerUser(userRequest: UserRequest): DbResponseWrapper<Int?>
+    fun registerUser(userRequest: UserRequest): DbResponseWrapper<Int>
 }

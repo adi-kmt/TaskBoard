@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class BucketRepositoryImpl @Autowired constructor(private val context: DSLContext) : BucketRepository {
-    override fun createBucket(bucketRequest: BucketRequest): DbResponseWrapper<Int?> {
+    override fun createBucket(bucketRequest: BucketRequest): DbResponseWrapper<Int> {
         return try {
             val bucketId = context.insertInto<BucketsRecord>(BUCKETS)
                 .set(BUCKETS.BUCKET_TITLE, bucketRequest.title)
@@ -21,9 +21,13 @@ class BucketRepositoryImpl @Autowired constructor(private val context: DSLContex
                 .returning()
                 .fetchSingle().id
 
-            DbResponseWrapper.Success(
-                data = bucketId
-            )
+            bucketId?.let {
+                DbResponseWrapper.Success(
+                    data = bucketId
+                )
+            } ?: run {
+                DbResponseWrapper.ServerException(Exception("Failed to store into table"))
+            }
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(
                 exception = e

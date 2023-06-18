@@ -13,7 +13,7 @@ class UserServiceImpl
 @Autowired constructor(private val userRepository: UserRepository) : UserService {
     override fun login(loginUserRequest: LoginUserRequest): DbResponseWrapper<UserResponse> {
         try {
-            val user = userRepository.getUserByUserName(loginUserRequest.userID)
+            val user = userRepository.getUserByUserId(loginUserRequest.userID)
 
             return when (user) {
                 is DbResponseWrapper.Success -> {
@@ -34,7 +34,7 @@ class UserServiceImpl
         }
     }
 
-    override fun registerUser(userRequest: UserRequest): DbResponseWrapper<Int?> {
+    override fun registerUser(userRequest: UserRequest): DbResponseWrapper<Int> {
         return try {
             userRepository.createUser(userRequest)
         } catch (e: Exception) {

@@ -10,12 +10,7 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
 @RestController
@@ -26,7 +21,7 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
     fun createBucket(
         @Valid @RequestBody bucketRequest: BucketRequest,
         @RequestParam userId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<Int?>>> {
+    ): Mono<ResponseEntity<ResponseWrapper<Int>>> {
         return try {
             Mono.just(
                 bucketService.createBucket(
@@ -44,12 +39,13 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
     @GetMapping
     fun getAllBuckets(
         @RequestParam boardId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<List<BucketResponse>?>>> {
+    ): Mono<ResponseEntity<ResponseWrapper<List<BucketResponse>>>> {
         return try {
             Mono.just(
                 bucketService.getAllBucketsForBoardId(
                     boardId = boardId
-                ).unwrap())
+                ).unwrap()
+            )
         } catch (e: Exception) {
             Mono.just(
                 ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)

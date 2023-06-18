@@ -65,7 +65,7 @@ dependencies {
     }
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     testImplementation("com.ninja-squad:springmockk:4.0.2")
-//    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 flyway {

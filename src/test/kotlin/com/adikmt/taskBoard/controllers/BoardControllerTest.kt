@@ -18,7 +18,7 @@ class BoardControllerTest {
 
     private val boardController = BoardController(boardService)
 
-    private val boardRequest = BoardRequest(title = "Board title", isStarred = false)
+    private val boardRequest = BoardRequest(title = "Board title")
 
     private val boardResponse = BoardResponse(boardId = 1, title = "Board title")
 

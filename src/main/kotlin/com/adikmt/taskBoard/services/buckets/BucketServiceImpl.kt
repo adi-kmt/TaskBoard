@@ -16,12 +16,12 @@ class BucketServiceImpl
     private val boardRepository: BoardRepository
 ) : BucketService {
 
-    override fun createBucket(bucketRequest: BucketRequest, userId: Int): DbResponseWrapper<Int?> {
+    override fun createBucket(bucketRequest: BucketRequest, userId: Int): DbResponseWrapper<Int> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId = userId, boardId = bucketRequest.boardId)
             return when (userRole) {
                 is DbResponseWrapper.Success -> {
-                    if (userRole.data?.equals(UserRole.ADMIN) == true) {
+                    if (userRole.data?.equals(UserRole.admin) == true) {
                         bucketRepository.createBucket(bucketRequest)
                     } else {
                         DbResponseWrapper.UserException(exception = Exception("Non admins can't create Buckets"))
@@ -35,7 +35,7 @@ class BucketServiceImpl
         }
     }
 
-    override fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<List<BucketResponse>?> {
+    override fun getAllBucketsForBoardId(boardId: Int): DbResponseWrapper<List<BucketResponse>> {
         return try {
             bucketRepository.getAllBucketsForBoardId(boardId)
         } catch (e: Exception) {

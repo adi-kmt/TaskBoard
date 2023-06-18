@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository
 @Repository
 class UserRepositoryImpl @Autowired constructor(private val context: DSLContext) : UserRepository {
 
-    override fun createUser(userRequest: UserRequest): DbResponseWrapper<Int?> {
+    override fun createUser(userRequest: UserRequest): DbResponseWrapper<Int> {
         return try {
             val userId = context.insertInto<UsersRecord>(USERS)
                 .set(USERS.USER_NAME, userRequest.userName)

@@ -31,8 +31,8 @@ class BoardServiceImpl @Autowired constructor(
             val userRole = boardRepository.getUserRoleForBoard(userId, addUserToBoardRequest.boardId)
             when (userRole) {
                 is DbResponseWrapper.Success -> {
-                    if (userRole.data?.equals(UserRole.ADMIN) == true) {
-                        userRepository.addUserToBoard(addUserToBoardRequest)
+                    if (userRole.data?.equals(UserRole.admin) == true) {
+                        userRepository.addUserToBoard(userId = addUserToBoardRequest.userId, boardId = addUserToBoardRequest.boardId)
                     } else {
                         DbResponseWrapper.UserException(exception = Exception("Non admins can't add user to board'"))
                     }
@@ -45,7 +45,7 @@ class BoardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardResponse?> {
+    override fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardResponse> {
         return try {
             boardRepository.getBoardById(boardId = boardId, userId = userId)
         } catch (e: Exception) {
@@ -53,7 +53,7 @@ class BoardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardResponse>?> {
+    override fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardResponse>> {
         try {
             return boardRepository.searchBoardByName(boardName = boardName, userId = userId)
         } catch (e: Exception) {
@@ -61,7 +61,7 @@ class BoardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardResponse>?> {
+    override fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardResponse>> {
         return try {
             boardRepository.getAllBoardsForUser(userId = userId)
         } catch (e: Exception) {

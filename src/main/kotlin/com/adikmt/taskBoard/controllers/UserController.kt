@@ -13,11 +13,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
 @RestController
@@ -40,7 +36,7 @@ class UserController @Autowired constructor(private val userService: UserService
     }
 
     @PostMapping("/register")
-    fun register(@Valid @RequestBody userRequest: UserRequest): Mono<ResponseEntity<ResponseWrapper<Int?>>> {
+    fun register(@Valid @RequestBody userRequest: UserRequest): Mono<ResponseEntity<ResponseWrapper<Int>>> {
         return try {
             Mono.just(
                 userService.registerUser(userRequest).unwrap(successResponseStatus = ResponseStatus.CREATED)

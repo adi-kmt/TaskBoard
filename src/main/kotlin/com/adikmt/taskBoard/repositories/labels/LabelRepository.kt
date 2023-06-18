@@ -10,7 +10,7 @@ interface LabelRepository {
      * 1. Create Labels (Only to be done by admin)
      * 2. Get All labels
      */
-    fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int?>
+    fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int>
 
     fun getAllLabels(): DbResponseWrapper<List<LabelResponse>>
 }

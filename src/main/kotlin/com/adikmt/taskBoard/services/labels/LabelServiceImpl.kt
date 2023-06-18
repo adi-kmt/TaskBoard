@@ -15,13 +15,13 @@ class LabelServiceImpl @Autowired constructor(
     private val boardRepository: BoardRepository
 ) : LabelService {
 
-    override fun createLabel(labelRequest: LabelRequest, userId: Int, boardId: Int): DbResponseWrapper<Int?> {
+    override fun createLabel(labelRequest: LabelRequest, userId: Int, boardId: Int): DbResponseWrapper<Int> {
         try {
             val userRole = boardRepository.getUserRoleForBoard(userId = userId, boardId = boardId)
 
             return when (userRole) {
                 is DbResponseWrapper.Success -> {
-                    if (userRole.data?.equals(UserRole.ADMIN) == true) {
+                    if (userRole.data?.equals(UserRole.admin) == true) {
                         labelRepository.createLabel(labelRequest)
                     } else {
                         DbResponseWrapper.UserException(exception = Exception("Only admins can create labels"))
@@ -35,7 +35,7 @@ class LabelServiceImpl @Autowired constructor(
         }
     }
 
-    override fun getAllLabels(): DbResponseWrapper<List<LabelResponse>?> {
+    override fun getAllLabels(): DbResponseWrapper<List<LabelResponse>> {
         return try {
             labelRepository.getAllLabels()
         } catch (e: Exception) {

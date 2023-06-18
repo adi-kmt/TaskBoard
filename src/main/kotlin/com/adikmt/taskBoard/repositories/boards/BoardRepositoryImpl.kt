@@ -18,13 +18,13 @@ import java.util.concurrent.CompletableFuture
 @Repository
 class BoardRepositoryImpl @Autowired constructor(private val context: DSLContext) : BoardRepository {
 
-    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int?> {
+    override fun createBoard(boardRequest: BoardRequest, userId: Int): DbResponseWrapper<Int> {
         /** In one transaction :-
          * 1. Add board to boards table
          * 2. Add user to boards-user table with role
          */
         try {
-            val data: CompletableFuture<out DbResponseWrapper<Int?>> = context.transactionResultAsync { configuration ->
+            val data: CompletableFuture<out DbResponseWrapper<Int>> = context.transactionResultAsync { configuration ->
                 val boardId: Int? = DSL.using(configuration)
                     .insertInto(BOARDS)
                     .set(BOARDS.BOARD_TITLE, boardRequest.title)

@@ -10,12 +10,7 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
 @RestController
@@ -23,7 +18,7 @@ import reactor.core.publisher.Mono
 class LabelController @Autowired constructor(private val labelService: LabelService) {
 
     @GetMapping
-    fun getAllLabels(): Mono<ResponseEntity<ResponseWrapper<List<LabelResponse>?>>> {
+    fun getAllLabels(): Mono<ResponseEntity<ResponseWrapper<List<LabelResponse>>>> {
         return try {
             Mono.just(
                 labelService.getAllLabels().unwrap()
@@ -40,7 +35,7 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
         @Valid @RequestBody labelRequest: LabelRequest,
         @RequestParam userId: Int,
         @RequestParam boardId: Int
-    ): Mono<ResponseEntity<ResponseWrapper<Int?>>> {
+    ): Mono<ResponseEntity<ResponseWrapper<Int>>> {
         return try {
             Mono.just(
                 labelService.createLabel(

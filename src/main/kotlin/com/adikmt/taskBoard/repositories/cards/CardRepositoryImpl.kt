@@ -21,7 +21,7 @@ import java.util.stream.Collectors
 
 @Repository
 class CardRepositoryImpl @Autowired constructor(private val context: DSLContext) : CardRepository {
-    override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int?> {
+    override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int> {
         return try {
             val cardId = context.insertInto<CardsRecord>(CARDS)
                 .set(CARDS.CARD_TITLE, cardRequest.title)
@@ -36,9 +36,13 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
                 .returning()
                 .fetchSingle().id
 
-            DbResponseWrapper.Success(
-                data = cardId
-            )
+            cardId?.let {
+                DbResponseWrapper.Success(
+                    data = cardId
+                )
+            } ?: run {
+                DbResponseWrapper.ServerException(Exception("Failed to save into table"))
+            }
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(
                 exception = e

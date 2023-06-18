@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository
 @Repository
 class LabelRepositoryImpl @Autowired constructor(private val context: DSLContext) : LabelRepository {
 
-    override fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int?> {
+    override fun createLabel(labelRequest: LabelRequest): DbResponseWrapper<Int> {
         return try {
             val labelId = context.insertInto<LabelsRecord>(LABELS)
                 .set(LABELS.LABEL_NAME, labelRequest.name)
@@ -22,9 +22,13 @@ class LabelRepositoryImpl @Autowired constructor(private val context: DSLContext
                 .returning()
                 .fetchSingle().id
 
-            DbResponseWrapper.Success(
-                data = labelId
-            )
+            labelId?.let {
+                DbResponseWrapper.Success(
+                    data = labelId
+                )
+            } ?: run {
+                DbResponseWrapper.ServerException(Exception("Failed to store in table"))
+            }
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(
                 exception = e

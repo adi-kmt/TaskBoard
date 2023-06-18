@@ -11,9 +11,9 @@ interface BoardService {
 
     fun addUserToBoard(userId: Int, addUserToBoardRequest: AddUserToBoardRequest): DbResponseWrapper<Boolean>
 
-    fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardResponse?>
+    fun getBoardById(boardId: Int, userId: Int): DbResponseWrapper<BoardResponse>
 
-    fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardResponse>?>
+    fun searchBoardByName(boardName: String, userId: Int): DbResponseWrapper<List<BoardResponse>>
 
-    fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardResponse>?>
+    fun getAllBoardsForUser(userId: Int): DbResponseWrapper<List<BoardResponse>>
 }

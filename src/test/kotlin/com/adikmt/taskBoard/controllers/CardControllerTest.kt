@@ -27,7 +27,8 @@ class CardControllerTest {
         startDate = "start date",
         endDate = "end date",
         boardId = 1,
-        bucketId = 1
+        bucketId = 1,
+        labelId = 1
     )
 
     val cardResponse = CardResponse(
@@ -36,7 +37,9 @@ class CardControllerTest {
         description = "card description",
         startDate = "start date",
         endDate = "end date",
-        bucketId = 1
+        bucketId = 1,
+        labelId = 1,
+        isCardArchived = false
     )
 
 
