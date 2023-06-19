@@ -16,12 +16,13 @@ class UserAuthServiceImpl @Autowired constructor(
 ) : UserAuthService {
     override fun loadUserByUsername(username: String?): UserDetails {
         username?.let {
-            when (val user = userRepository.getUserByUserName(userId = it.toInt())) {
+            when (val user = userRepository.getUserByUserId(userId = it.toInt())) {
                 is DbResponseWrapper.Success -> {
                     return user.data ?: run {
                         throw UsernameNotFoundException("User not found")
                     }
                 }
+
                 else -> throw UsernameNotFoundException("User not found")
             }
         } ?: run {

@@ -4,7 +4,6 @@ import com.adikmt.taskBoard.integrationtest.setupDSL
 import jooq.generated.tables.records.CardsRecord
 import jooq.generated.tables.references.CARDS
 import org.jooq.DSLContext
-import org.jooq.conf.Settings
 import org.jooq.exception.DataChangedException
 import org.jooq.impl.DSL
 import org.junit.jupiter.api.BeforeAll
@@ -36,14 +35,10 @@ class CardConcurrencyTest {
     @BeforeAll
     fun setup() {
         context = setupDSL()
-        context = context.also {
-            it.configuration().derive(
-                Settings()
-                    .withUpdateRecordTimestamp(true)
-                    .withExecuteWithOptimisticLocking(true)
-            )
-        }
-            .dsl()
+        context.settings()
+            .withUpdateRecordTimestamp(true)
+            .withExecuteWithOptimisticLocking(true)
+            .withExecuteWithOptimisticLockingExcludeUnversioned(true)
 
         transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
     }
@@ -51,28 +46,17 @@ class CardConcurrencyTest {
     @Test
     @Transactional(propagation = Propagation.NEVER)
     fun `check card update concurrency`() {
-
-        val data = context
-            .selectFrom(CARDS)
-            .where(CARDS.ID.eq(1))
-            .fetchOptional()
-            .ifPresent {
-                it.set(CARDS.CARD_TITLE, "kjndskjn")
-                it.store()
-            }
-
-
-        val ex = assertThrows<DataChangedException> {
+        assertThrows<DataChangedException>(message = "Database rows have been updated") {
             context.transaction { transaction ->
                 val record1 = DSL.using(transaction).select()
                     .from(CARDS)
-                    .where(CARDS.CARD_TITLE.eq("kjndskjndksjnds"))
+                    .where(CARDS.ID.eq(1))
                     .fetchSingleInto(CardsRecord::class.java)
 
                 DSL.using(transaction).transaction { innerTransaction ->
                     val record2 = DSL.using(innerTransaction).select()
                         .from(CARDS)
-                        .where(CARDS.CARD_TITLE.eq("kjndskjndksjnds"))
+                        .where(CARDS.ID.eq(1))
                         .fetchSingleInto(CardsRecord::class.java)
 
                     record2.set(CARDS.CARD_TITLE, "kjnefkjnef")
@@ -84,6 +68,57 @@ class CardConcurrencyTest {
                 record1.store()
             }
         }
+    }
 
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    fun `change bucket concurrency test`() {
+        assertThrows<DataChangedException>(message = "Database rows have been updated") {
+            context.transaction { transaction ->
+                val record1 = DSL.using(transaction).select()
+                    .from(CARDS)
+                    .where(CARDS.ID.eq(1))
+                    .fetchSingleInto(CardsRecord::class.java)
+
+                DSL.using(transaction).transaction { innerTransaction ->
+                    val record2 = DSL.using(innerTransaction).select()
+                        .from(CARDS)
+                        .where(CARDS.ID.eq(1))
+                        .fetchSingleInto(CardsRecord::class.java)
+
+                    record2.set(CARDS.BUCKET_ID, 2)
+                    record2.store()
+                }
+
+                record1.set(CARDS.BUCKET_ID, 3)
+                record1.store()
+            }
+        }
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    fun `change assignee concurrency test`() {
+        assertThrows<DataChangedException>(message = "Database rows have been updated") {
+            context.transaction { transaction ->
+                val record1 = DSL.using(transaction).select()
+                    .from(CARDS)
+                    .where(CARDS.ID.eq(1))
+                    .fetchSingleInto(CardsRecord::class.java)
+
+                DSL.using(transaction).transaction { innerTransaction ->
+                    val record2 = DSL.using(innerTransaction).select()
+                        .from(CARDS)
+                        .where(CARDS.ID.eq(1))
+                        .fetchSingleInto(CardsRecord::class.java)
+
+                    record2.set(CARDS.USER_ASSIGNED_ID, 2)
+                    record2.store()
+                }
+
+                record1.set(CARDS.USER_ASSIGNED_ID, 3)
+                record1.store()
+            }
+        }
     }
 }
