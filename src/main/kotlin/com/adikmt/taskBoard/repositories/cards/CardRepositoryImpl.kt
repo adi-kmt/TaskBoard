@@ -12,7 +12,6 @@ import jooq.generated.tables.references.BOARDS
 import jooq.generated.tables.references.BUCKETS
 import jooq.generated.tables.references.CARDS
 import org.jooq.DSLContext
-import org.jooq.impl.DSL.rowNumber
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
@@ -59,15 +58,14 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
         }
     }
 
-    override fun getAllCards(boardId: Int, start: Int, end: Int): List<DbResponseWrapper<CardResponse>> {
+    override fun getAllCards(boardId: Int): List<DbResponseWrapper<CardResponse>> {
         return try {
             context.select()
                 .from(BOARDS)
                 .innerJoin(BUCKETS).on(BOARDS.ID.eq(BUCKETS.BOARD_ID))
                 .innerJoin(CARDS).on(BUCKETS.ID.eq(CARDS.BUCKET_ID))
                 .where(BOARDS.ID.eq(boardId).and(CARDS.IS_CARD_ARCHIVED.isFalse))
-                .qualify(rowNumber().over().orderBy(CARDS.CARD_END_DATE.desc()).between(start, end))
-                .orderBy(CARDS.CARD_END_DATE.desc())
+                .orderBy(CARDS.CARD_END_DATE)
                 .forUpdate()
                 .fetchStreamInto(CardsRecord::class.java)
                 .collect(Collectors.toList())
@@ -85,9 +83,7 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
 
     override fun getAllCardsAssignedToUserById(
         userId: Int,
-        boardId: Int,
-        start: Int,
-        end: Int
+        boardId: Int
     ): List<DbResponseWrapper<CardResponse>> {
         return try {
             context.select()
@@ -99,7 +95,7 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
                         .and(CARDS.IS_CARD_ARCHIVED.isFalse)
                         .and(CARDS.USER_ASSIGNED_ID.eq(userId))
                 )
-                .qualify(rowNumber().over().orderBy(CARDS.CARD_END_DATE.desc()).between(start, end))
+                .orderBy(CARDS.CARD_END_DATE)
                 .forUpdate()
                 .fetchStreamInto(CardsRecord::class.java)
                 .collect(Collectors.toList())
