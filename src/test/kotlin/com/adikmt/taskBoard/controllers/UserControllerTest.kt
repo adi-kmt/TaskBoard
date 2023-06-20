@@ -3,6 +3,7 @@ package com.adikmt.taskBoard.controllers
 import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.LoginUserRequest
 import com.adikmt.taskBoard.dtos.requests.UserRequest
+import com.adikmt.taskBoard.dtos.responses.JWTUserResponse
 import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.services.users.UserService
 import io.mockk.every
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.util.LinkedMultiValueMap
-import reactor.test.StepVerifier
 
 @SpringBootTest
 class UserControllerTest {
@@ -31,6 +31,8 @@ class UserControllerTest {
         userPassword = "Password",
     )
 
+    private val userJWTToken = JWTUserResponse(userId = 0, token = "token")
+
     @Test
     fun `check login success`() {
         every { mockUserService.login(loginUserRequest = loginUserRequest) }.returns(
@@ -39,10 +41,8 @@ class UserControllerTest {
 
         val response = userController.login(loginUserRequest)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.OK)
-            assert(responseEntity.body?.data == userResponse)
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.OK)
+        assert(response.body?.data == userResponse)
     }
 
     @Test
@@ -53,10 +53,8 @@ class UserControllerTest {
 
         val response = userController.login(loginUserRequest)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-            assert(responseEntity.body?.errorMessage == "Exception")
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+        assert(response.body?.errorMessage == "Exception")
     }
 
     @Test
@@ -84,15 +82,13 @@ class UserControllerTest {
     @Test
     fun `check create user success`() {
         every { mockUserService.registerUser(userRequest = userRequest) }.returns(
-            DbResponseWrapper.Success(data = 0)
+            DbResponseWrapper.Success(data = userJWTToken)
         )
 
         val response = userController.register(userRequest)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.CREATED)
-            assert(responseEntity.body?.data == 0)
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.CREATED)
+        assert(response.body?.data == userJWTToken)
     }
 
     @Test
@@ -103,9 +99,7 @@ class UserControllerTest {
 
         val response = userController.register(userRequest)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.BAD_REQUEST)
-            assert(responseEntity.body?.errorMessage == "Exception")
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.BAD_REQUEST)
+        assert(response.body?.errorMessage == "Exception")
     }
 }

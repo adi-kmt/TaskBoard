@@ -21,6 +21,14 @@ import java.util.stream.Collectors
 
 @Repository
 class CardRepositoryImpl @Autowired constructor(private val context: DSLContext) : CardRepository {
+
+    init {
+        context.settings()
+            .withUpdateRecordTimestamp(true)
+            .withExecuteWithOptimisticLocking(true)
+            .withExecuteWithOptimisticLockingExcludeUnversioned(true)
+    }
+
     override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int> {
         return try {
             val cardId = context.insertInto<CardsRecord>(CARDS)

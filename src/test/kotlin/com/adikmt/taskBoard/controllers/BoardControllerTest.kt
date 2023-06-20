@@ -9,7 +9,6 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
-import reactor.test.StepVerifier
 
 @SpringBootTest
 class BoardControllerTest {
@@ -29,10 +28,8 @@ class BoardControllerTest {
                 )
         val response = boardController.createBoard(boardRequest = boardRequest, userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.CREATED)
-            assert(responseEntity.body?.data == 1)
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.CREATED)
+        assert(response.body?.data == 1)
     }
 
     @Test
@@ -42,10 +39,8 @@ class BoardControllerTest {
                 )
         val response = boardController.createBoard(boardRequest = boardRequest, userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-            assert(responseEntity.body?.errorMessage == "Exception")
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+        assert(response.body?.errorMessage == "Exception")
     }
 
     @Test
@@ -55,10 +50,8 @@ class BoardControllerTest {
                 )
         val response = boardController.getBoardById(id = 1, userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.OK)
-            assert(responseEntity.body?.data == boardResponse)
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.OK)
+        assert(response.body?.data == boardResponse)
     }
 
     @Test
@@ -68,10 +61,8 @@ class BoardControllerTest {
                 )
         val response = boardController.getBoardById(id = 1, userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-            assert(responseEntity.body?.errorMessage == "Exception")
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+        assert(response.body?.errorMessage == "Exception")
     }
 
     @Test
@@ -81,10 +72,8 @@ class BoardControllerTest {
                 )
         val response = boardController.getAllBoards(userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.OK)
-            assert(responseEntity.body?.data == listOf(boardResponse))
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.OK)
+        assert(response.body?.data == listOf(boardResponse))
     }
 
     @Test
@@ -94,10 +83,8 @@ class BoardControllerTest {
                 )
         val response = boardController.getAllBoards(userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-            assert(responseEntity.body?.errorMessage == "Exception")
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+        assert(response.body?.errorMessage == "Exception")
     }
 
     @Test
@@ -107,10 +94,8 @@ class BoardControllerTest {
                 )
         val response = boardController.searchBoardByName(boardName = "Board title", userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.OK)
-            assert(responseEntity.body?.data == listOf(boardResponse))
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.OK)
+        assert(response.body?.data == listOf(boardResponse))
     }
 
     @Test
@@ -120,9 +105,7 @@ class BoardControllerTest {
                 )
         val response = boardController.searchBoardByName(boardName = "Board title", userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-            assert(responseEntity.body?.errorMessage == "Exception")
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+        assert(response.body?.errorMessage == "Exception")
     }
 }

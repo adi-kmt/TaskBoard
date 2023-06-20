@@ -9,7 +9,6 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
-import reactor.test.StepVerifier
 
 @SpringBootTest
 class BucketControllerTest {
@@ -29,10 +28,8 @@ class BucketControllerTest {
         )
         val response = bucketController.createBucket(bucketRequest = bucketRequest, userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.CREATED)
-            assert(responseEntity.body?.data == 1)
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.CREATED)
+        assert(response.body?.data == 1)
     }
 
     @Test
@@ -42,10 +39,8 @@ class BucketControllerTest {
         )
         val response = bucketController.createBucket(bucketRequest = bucketRequest, userId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-            assert(responseEntity.body?.errorMessage == "Exception")
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+        assert(response.body?.errorMessage == "Exception")
     }
 
     @Test
@@ -55,10 +50,8 @@ class BucketControllerTest {
         )
         val response = bucketController.getAllBuckets(boardId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.OK)
-            assert(responseEntity.body?.data == listOf(bucketResponse))
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.OK)
+        assert(response.body?.data == listOf(bucketResponse))
     }
 
     @Test
@@ -68,9 +61,7 @@ class BucketControllerTest {
         )
         val response = bucketController.getAllBuckets(boardId = 1)
 
-        StepVerifier.create(response).consumeNextWith { responseEntity ->
-            assert(responseEntity.statusCode == HttpStatus.BAD_REQUEST)
-            assert(responseEntity.body?.errorMessage == "Exception")
-        }.verifyComplete()
+        assert(response.statusCode == HttpStatus.BAD_REQUEST)
+        assert(response.body?.errorMessage == "Exception")
     }
 }
