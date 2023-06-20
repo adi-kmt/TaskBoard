@@ -19,6 +19,8 @@ class CardServiceImpl @Autowired constructor(
 ) : CardService {
     override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int> {
         try {
+
+            //Check bucket and lable id exist
             val userRole = boardRepository.getUserRoleForBoard(userId, cardRequest.boardId)
 
             return when (userRole) {
@@ -29,6 +31,7 @@ class CardServiceImpl @Autowired constructor(
                         DbResponseWrapper.UserException(exception = Exception("Non admins can't add cards to board'"))
                     }
                 }
+
                 else -> DbResponseWrapper.UserException(exception = Exception("Something went wrong"))
             }
         } catch (e: Exception) {
@@ -36,9 +39,9 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun getAllCards(boardId: Int): List<DbResponseWrapper<CardResponse>> {
+    override fun getAllCards(boardId: Int, start: Int, end: Int): List<DbResponseWrapper<CardResponse>> {
         return try {
-            cardRepository.getAllCards(boardId)
+            cardRepository.getAllCards(boardId = boardId, start = start, end = end)
         } catch (e: Exception) {
             listOf(
                 DbResponseWrapper.ServerException(exception = e)
@@ -46,9 +49,14 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun getAllCardsAssignedToUserById(userId: Int, boardId: Int): List<DbResponseWrapper<CardResponse>> {
+    override fun getAllCardsAssignedToUserById(
+        userId: Int,
+        boardId: Int,
+        start: Int,
+        end: Int
+    ): List<DbResponseWrapper<CardResponse>> {
         return try {
-            cardRepository.getAllCardsAssignedToUserById(userId = userId, boardId = boardId)
+            cardRepository.getAllCardsAssignedToUserById(userId = userId, boardId = boardId, start = start, end = end)
         } catch (e: Exception) {
             listOf(
                 DbResponseWrapper.ServerException(exception = e)
@@ -58,6 +66,7 @@ class CardServiceImpl @Autowired constructor(
 
     override fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Boolean> {
         return try {
+            //Check label id exists
             cardRepository.updateCardDetails(cardRequest)
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(exception = e)
@@ -66,6 +75,7 @@ class CardServiceImpl @Autowired constructor(
 
     override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Boolean> {
         return try {
+            //Check new bucket id exists
             cardRepository.updateCardBucket(cardUpdateBucketRequest)
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(exception = e)
@@ -74,6 +84,7 @@ class CardServiceImpl @Autowired constructor(
 
     override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Boolean> {
         return try {
+            //check new bucket exists
             cardRepository.assignCardToAnotherUser(cardUpdateUserRequest)
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(exception = e)

@@ -25,8 +25,14 @@ interface CardRepository {
      * Cannot delete, but archived
      */
     fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int>
-    fun getAllCards(boardId: Int): List<DbResponseWrapper<CardResponse>>
-    fun getAllCardsAssignedToUserById(userId: Int, boardId: Int): List<DbResponseWrapper<CardResponse>>
+    fun getAllCards(boardId: Int, start: Int, end: Int): List<DbResponseWrapper<CardResponse>>
+    fun getAllCardsAssignedToUserById(
+        userId: Int,
+        boardId: Int,
+        start: Int,
+        end: Int
+    ): List<DbResponseWrapper<CardResponse>>
+
     fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Boolean>
     fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Boolean>
     fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Boolean>
