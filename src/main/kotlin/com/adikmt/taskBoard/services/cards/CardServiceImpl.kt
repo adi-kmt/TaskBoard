@@ -11,6 +11,7 @@ import com.adikmt.taskBoard.repositories.boards.BoardRepository
 import com.adikmt.taskBoard.repositories.cards.CardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class CardServiceImpl @Autowired constructor(
@@ -36,9 +37,13 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun getAllCards(boardId: Int): List<DbResponseWrapper<CardResponse>> {
+    override fun getAllCards(
+        boardId: Int,
+        limit: Int,
+        seekAfter: LocalDateTime
+    ): List<DbResponseWrapper<CardResponse>> {
         return try {
-            cardRepository.getAllCards(boardId)
+            cardRepository.getAllCards(boardId = boardId, limit = limit, seekAfter = seekAfter)
         } catch (e: Exception) {
             listOf(
                 DbResponseWrapper.ServerException(exception = e)
@@ -46,9 +51,19 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun getAllCardsAssignedToUserById(userId: Int, boardId: Int): List<DbResponseWrapper<CardResponse>> {
+    override fun getAllCardsAssignedToUserById(
+        userId: Int,
+        boardId: Int,
+        limit: Int,
+        seekAfter: LocalDateTime
+    ): List<DbResponseWrapper<CardResponse>> {
         return try {
-            cardRepository.getAllCardsAssignedToUserById(userId = userId, boardId = boardId)
+            cardRepository.getAllCardsAssignedToUserById(
+                userId = userId,
+                boardId = boardId,
+                limit = limit,
+                seekAfter = seekAfter
+            )
         } catch (e: Exception) {
             listOf(
                 DbResponseWrapper.ServerException(exception = e)

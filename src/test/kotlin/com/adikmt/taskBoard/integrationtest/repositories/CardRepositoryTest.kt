@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import org.springframework.boot.test.autoconfigure.jooq.JooqTest
 import org.springframework.test.context.ActiveProfiles
+import java.time.LocalDateTime
 
 @JooqTest
 @ActiveProfiles("test")
@@ -98,7 +99,7 @@ class CardRepositoryTest {
 
     @Test
     fun `get all cards valid`() {
-        val cardResponse = cardRepository.getAllCards(boardId = 1)
+        val cardResponse = cardRepository.getAllCards(boardId = 1, limit = 2, seekAfter = LocalDateTime.now())
         cardResponse.forEachIndexed { index, card ->
             when (index) {
                 0 -> assert(card == DbResponseWrapper.Success(MockObjects.Card.cardResponseList[1]))
@@ -109,13 +110,18 @@ class CardRepositoryTest {
 
     @Test
     fun `get all cards for invalid board`() {
-        val cardResponse = cardRepository.getAllCards(boardId = 3)
+        val cardResponse = cardRepository.getAllCards(boardId = 3, limit = 10, seekAfter = LocalDateTime.MIN)
         assert(cardResponse.isEmpty())
     }
 
     @Test
     fun `get all cards for board and user assigned`() {
-        val cardResponse = cardRepository.getAllCardsAssignedToUserById(userId = 1, boardId = 1)
+        val cardResponse = cardRepository.getAllCardsAssignedToUserById(
+            userId = 1,
+            boardId = 1,
+            limit = 2,
+            seekAfter = LocalDateTime.now()
+        )
         cardResponse.forEachIndexed { index, card ->
             when (index) {
                 0 -> assert(card == DbResponseWrapper.Success(MockObjects.Card.cardResponseList[1]))
@@ -126,7 +132,12 @@ class CardRepositoryTest {
 
     @Test
     fun `get all cards by user for invalid data`() {
-        val cardResponse = cardRepository.getAllCardsAssignedToUserById(userId = 3, boardId = 2)
+        val cardResponse = cardRepository.getAllCardsAssignedToUserById(
+            userId = 3,
+            boardId = 2,
+            limit = 2,
+            seekAfter = LocalDateTime.now()
+        )
         assert(cardResponse.isEmpty())
     }
 }

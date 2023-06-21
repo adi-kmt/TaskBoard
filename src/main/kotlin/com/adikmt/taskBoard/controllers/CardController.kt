@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/cards")
@@ -37,20 +38,28 @@ class CardController @Autowired constructor(private val cardService: CardService
     @GetMapping("/{boardId}")
     fun getAllCards(
         @PathVariable boardId: Int,
-        @RequestParam(required = false) userId: Int? = null
+        @RequestParam(required = false) userId: Int? = null,
+        @RequestParam(required = false) limit: Int = 20,
+        @RequestParam seekAfter: LocalDateTime
     ): List<ResponseEntity<ResponseWrapper<CardResponse>>> {
         try {
             val headers = HttpHeaders().also {
                 it.add(HttpHeaders.CONTENT_TYPE, APPLICATION_NDJSON_VALUE)
             }
             return if (userId != null) {
-                cardService.getAllCardsAssignedToUserById(userId = userId, boardId = boardId).map {
+                cardService.getAllCardsAssignedToUserById(
+                    userId = userId,
+                    boardId = boardId,
+                    limit = limit,
+                    seekAfter = seekAfter
+                ).map {
                     it.unwrap(header = headers)
                 }
             } else {
-                cardService.getAllCards(boardId = boardId).map {
-                    it.unwrap(header = headers)
-                }
+                cardService.getAllCards(boardId = boardId, limit = limit, seekAfter = seekAfter)
+                    .map {
+                        it.unwrap(header = headers)
+                    }
             }
         } catch (e: Exception) {
             return listOf(

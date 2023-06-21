@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import java.util.stream.Collectors
 
+
 @Repository
 class CardRepositoryImpl @Autowired constructor(private val context: DSLContext) : CardRepository {
 
@@ -58,14 +59,20 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
         }
     }
 
-    override fun getAllCards(boardId: Int): List<DbResponseWrapper<CardResponse>> {
+    override fun getAllCards(
+        boardId: Int,
+        limit: Int,
+        seekAfter: LocalDateTime
+    ): List<DbResponseWrapper<CardResponse>> {
         return try {
             context.select()
                 .from(BOARDS)
                 .innerJoin(BUCKETS).on(BOARDS.ID.eq(BUCKETS.BOARD_ID))
                 .innerJoin(CARDS).on(BUCKETS.ID.eq(CARDS.BUCKET_ID))
                 .where(BOARDS.ID.eq(boardId).and(CARDS.IS_CARD_ARCHIVED.isFalse))
-                .orderBy(CARDS.CARD_END_DATE)
+                .orderBy(CARDS.CARD_END_DATE.desc())
+                .seek(seekAfter)
+                .limit(limit)
                 .forUpdate()
                 .fetchStreamInto(CardsRecord::class.java)
                 .collect(Collectors.toList())
@@ -83,7 +90,9 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
 
     override fun getAllCardsAssignedToUserById(
         userId: Int,
-        boardId: Int
+        boardId: Int,
+        limit: Int,
+        seekAfter: LocalDateTime
     ): List<DbResponseWrapper<CardResponse>> {
         return try {
             context.select()
@@ -95,7 +104,9 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
                         .and(CARDS.IS_CARD_ARCHIVED.isFalse)
                         .and(CARDS.USER_ASSIGNED_ID.eq(userId))
                 )
-                .orderBy(CARDS.CARD_END_DATE)
+                .orderBy(CARDS.CARD_END_DATE.desc())
+                .seek(seekAfter)
+                .limit(limit)
                 .forUpdate()
                 .fetchStreamInto(CardsRecord::class.java)
                 .collect(Collectors.toList())
