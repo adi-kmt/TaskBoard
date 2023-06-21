@@ -71,7 +71,7 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Boolean> {
+    override fun updateCardDetails(cardRequest: CardUpdateRequest, userId: Int): DbResponseWrapper<Boolean> {
         return try {
             cardRepository.updateCardDetails(cardRequest)
         } catch (e: Exception) {
@@ -79,7 +79,10 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Boolean> {
+    override fun updateCardBucket(
+        cardUpdateBucketRequest: CardUpdateBucketRequest,
+        userId: Int
+    ): DbResponseWrapper<Boolean> {
         return try {
             cardRepository.updateCardBucket(cardUpdateBucketRequest)
         } catch (e: Exception) {
@@ -87,7 +90,10 @@ class CardServiceImpl @Autowired constructor(
         }
     }
 
-    override fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Boolean> {
+    override fun assignCardToAnotherUser(
+        cardUpdateUserRequest: CardUpdateUserRequest,
+        userId: Int
+    ): DbResponseWrapper<Boolean> {
         return try {
             cardRepository.assignCardToAnotherUser(cardUpdateUserRequest)
         } catch (e: Exception) {

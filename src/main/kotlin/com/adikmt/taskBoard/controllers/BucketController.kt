@@ -24,7 +24,7 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
     ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             bucketService.createBucket(
                 bucketRequest = bucketRequest,
                 userId = userId

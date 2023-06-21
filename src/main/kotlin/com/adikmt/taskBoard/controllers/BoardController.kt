@@ -24,7 +24,7 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             boardService.createBoard(
                 boardRequest = boardRequest,
                 userId = userId
@@ -39,7 +39,7 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     fun getAllBoards(): ResponseEntity<ResponseWrapper<List<BoardResponse>>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             boardService.getAllBoardsForUser(
                 userId = userId
             ).unwrap()
@@ -55,7 +55,7 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     ): ResponseEntity<ResponseWrapper<BoardResponse>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             boardService.getBoardById(
                 boardId = id,
                 userId = userId
@@ -73,7 +73,7 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     ): ResponseEntity<ResponseWrapper<List<BoardResponse>>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             boardService.searchBoardByName(
                 boardName = boardName,
                 userId = userId

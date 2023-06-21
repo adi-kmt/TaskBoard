@@ -10,9 +10,8 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.util.LinkedMultiValueMap
+import org.springframework.security.test.context.support.WithMockUser
 
 @SpringBootTest
 class UserControllerTest {
@@ -58,25 +57,18 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "1")
     fun `check logout success`() {
-        val multiMap = LinkedMultiValueMap<String, String>().apply {
-            this.add(HttpHeaders.AUTHORIZATION, "Bearer jhbajfhbasfjhbsafjhb")
-        }
-
-        val response = userController.logout(header = HttpHeaders(multiMap))
+        val response = userController.logout()
 
         assert(response.statusCode == HttpStatus.OK)
     }
 
     @Test
     fun `check logout without bearer token for failure`() {
-        val multiMap = LinkedMultiValueMap<String, String>().apply {
-            this.add(HttpHeaders.AUTHORIZATION, "")
-        }
+        val response = userController.logout()
 
-        val response = userController.logout(header = HttpHeaders(multiMap))
-
-        assert(response.statusCode == HttpStatus.UNAUTHORIZED)
+        assert(response.statusCode == HttpStatus.BAD_REQUEST)
     }
 
     @Test

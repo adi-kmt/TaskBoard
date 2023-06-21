@@ -10,10 +10,10 @@ import com.adikmt.taskBoard.dtos.responses.UserResponse
 import com.adikmt.taskBoard.services.users.UserService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -40,19 +40,24 @@ class UserController @Autowired constructor(private val userService: UserService
     }
 
     @PostMapping("/logout")
-    fun logout(@RequestHeader header: HttpHeaders): ResponseEntity<ResponseWrapper<String>> {
-        val authHeader = header.getFirst(HttpHeaders.AUTHORIZATION)
-        if (authHeader.isNullOrEmpty() || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity(
-                ResponseWrapper(errorMessage = "No authorization header found"),
-                HttpStatus.UNAUTHORIZED
-            )
+    fun logout(): ResponseEntity<ResponseWrapper<String>> {
+        return try {
+            val userId = (ReactiveSecurityContextHolder.getContext()
+                .block()?.authentication?.principal as UserDetails?)?.username?.toInt()
+
+            if (userId != null) {
+                ReactiveSecurityContextHolder.clearContext()
+
+                ResponseEntity(
+                    ResponseWrapper(data = "Logout process completed"), HttpStatus.OK
+                )
+            } else {
+                ResponseEntity(
+                    ResponseWrapper(errorMessage = "User not logged in"), HttpStatus.BAD_REQUEST
+                )
+            }
+        } catch (e: Exception) {
+            ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
         }
-
-        ReactiveSecurityContextHolder.clearContext()
-
-        return ResponseEntity(
-            ResponseWrapper(data = "Logout process completed"), HttpStatus.OK
-        )
     }
 }

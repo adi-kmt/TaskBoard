@@ -9,6 +9,7 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
+import org.springframework.security.test.context.support.WithMockUser
 
 @SpringBootTest
 class BucketControllerTest {
@@ -22,28 +23,31 @@ class BucketControllerTest {
     val bucketResponse = BucketResponse(bucketId = 1, title = "main bucket", boardId = 1)
 
     @Test
+    @WithMockUser(username = "1")
     fun `create bucket successfully`() {
         every { mockBucketService.createBucket(bucketRequest = bucketRequest, userId = 1) }.returns(
             DbResponseWrapper.Success(data = 1)
         )
-        val response = bucketController.createBucket(bucketRequest = bucketRequest, userId = 1)
+        val response = bucketController.createBucket(bucketRequest = bucketRequest)
 
         assert(response.statusCode == HttpStatus.CREATED)
         assert(response.body?.data == 1)
     }
 
     @Test
+    @WithMockUser(username = "1")
     fun `create bucket with exception`() {
         every { mockBucketService.createBucket(bucketRequest = bucketRequest, userId = 1) }.returns(
             DbResponseWrapper.DBException(exception = Exception("Exception"))
         )
-        val response = bucketController.createBucket(bucketRequest = bucketRequest, userId = 1)
+        val response = bucketController.createBucket(bucketRequest = bucketRequest)
 
         assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
         assert(response.body?.errorMessage == "Exception")
     }
 
     @Test
+    @WithMockUser(username = "1")
     fun `Get all buckets successfully`() {
         every { mockBucketService.getAllBucketsForBoardId(boardId = 1) }.returns(
             DbResponseWrapper.Success(data = listOf(bucketResponse))
@@ -55,6 +59,7 @@ class BucketControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "1")
     fun `Get all bucket with exception`() {
         every { mockBucketService.getAllBucketsForBoardId(boardId = 1) }.returns(
             DbResponseWrapper.UserException(exception = Exception("Exception"))

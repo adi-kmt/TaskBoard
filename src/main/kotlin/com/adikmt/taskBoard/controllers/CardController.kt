@@ -28,7 +28,7 @@ class CardController @Autowired constructor(private val cardService: CardService
     ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             cardService.createCard(cardRequest = cardRequest, userId = userId)
                 .unwrap(successResponseStatus = ResponseStatus.CREATED)
         } catch (e: Exception) {
@@ -72,7 +72,7 @@ class CardController @Autowired constructor(private val cardService: CardService
     ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             cardService.updateCardDetails(
                 cardRequest = cardUpdateRequest,
                 userId = userId
@@ -88,7 +88,7 @@ class CardController @Autowired constructor(private val cardService: CardService
     ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             cardService.updateCardBucket(
                 cardUpdateBucketRequest = cardUpdateBucketRequest,
                 userId = userId
@@ -104,7 +104,7 @@ class CardController @Autowired constructor(private val cardService: CardService
     ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             cardService.assignCardToAnotherUser(
                 cardUpdateUserRequest = cardUpdateUserRequest,
                 userId = userId

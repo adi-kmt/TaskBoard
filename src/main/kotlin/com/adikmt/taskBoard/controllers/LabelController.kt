@@ -34,7 +34,7 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
     ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
             val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.details as UserDetails).username.toInt()
+                .block()?.authentication?.principal as UserDetails).username.toInt()
             labelService.createLabel(
                 labelRequest = labelRequest,
                 userId = userId,
