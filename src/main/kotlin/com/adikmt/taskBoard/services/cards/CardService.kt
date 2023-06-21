@@ -21,9 +21,9 @@ interface CardService {
         seekAfter: LocalDateTime
     ): List<DbResponseWrapper<CardResponse>>
 
-    fun updateCardDetails(cardRequest: CardUpdateRequest): DbResponseWrapper<Boolean>
+    fun updateCardDetails(cardRequest: CardUpdateRequest, userId: Int): DbResponseWrapper<Boolean>
 
-    fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Boolean>
+    fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest, userId: Int): DbResponseWrapper<Boolean>
 
-    fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest): DbResponseWrapper<Boolean>
+    fun assignCardToAnotherUser(cardUpdateUserRequest: CardUpdateUserRequest, userId: Int): DbResponseWrapper<Boolean>
 }

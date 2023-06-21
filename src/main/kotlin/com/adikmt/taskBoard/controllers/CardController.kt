@@ -11,10 +11,10 @@ import com.adikmt.taskBoard.dtos.responses.CardResponse
 import com.adikmt.taskBoard.services.cards.CardService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.ReactiveSecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -24,10 +24,11 @@ class CardController @Autowired constructor(private val cardService: CardService
 
     @PostMapping
     fun createCard(
-        @Valid @RequestBody cardRequest: CardRequest,
-        @RequestParam userId: Int
+        @Valid @RequestBody cardRequest: CardRequest
     ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
+            val userId = (ReactiveSecurityContextHolder.getContext()
+                .block()?.authentication?.details as UserDetails).username.toInt()
             cardService.createCard(cardRequest = cardRequest, userId = userId)
                 .unwrap(successResponseStatus = ResponseStatus.CREATED)
         } catch (e: Exception) {
@@ -38,27 +39,24 @@ class CardController @Autowired constructor(private val cardService: CardService
     @GetMapping("/{boardId}")
     fun getAllCards(
         @PathVariable boardId: Int,
-        @RequestParam(required = false) userId: Int? = null,
+        @RequestParam(required = false) assigneeUserId: Int? = null,
         @RequestParam(required = false) limit: Int = 20,
         @RequestParam seekAfter: LocalDateTime
     ): List<ResponseEntity<ResponseWrapper<CardResponse>>> {
         try {
-            val headers = HttpHeaders().also {
-                it.add(HttpHeaders.CONTENT_TYPE, APPLICATION_NDJSON_VALUE)
-            }
-            return if (userId != null) {
+            return if (assigneeUserId != null) {
                 cardService.getAllCardsAssignedToUserById(
-                    userId = userId,
+                    userId = assigneeUserId,
                     boardId = boardId,
                     limit = limit,
                     seekAfter = seekAfter
                 ).map {
-                    it.unwrap(header = headers)
+                    it.unwrap()
                 }
             } else {
                 cardService.getAllCards(boardId = boardId, limit = limit, seekAfter = seekAfter)
                     .map {
-                        it.unwrap(header = headers)
+                        it.unwrap()
                     }
             }
         } catch (e: Exception) {
@@ -70,12 +68,14 @@ class CardController @Autowired constructor(private val cardService: CardService
 
     @PutMapping("/update")
     fun updateCard(
-        @Valid @RequestBody cardUpdateRequest: CardUpdateRequest,
-        @RequestParam userId: Int
+        @Valid @RequestBody cardUpdateRequest: CardUpdateRequest
     ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
+            val userId = (ReactiveSecurityContextHolder.getContext()
+                .block()?.authentication?.details as UserDetails).username.toInt()
             cardService.updateCardDetails(
-                cardRequest = cardUpdateRequest
+                cardRequest = cardUpdateRequest,
+                userId = userId
             ).unwrap()
         } catch (e: Exception) {
             ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
@@ -84,12 +84,14 @@ class CardController @Autowired constructor(private val cardService: CardService
 
     @PatchMapping("/updateBucket")
     fun updateCardBucket(
-        @Valid @RequestBody cardUpdateBucketRequest: CardUpdateBucketRequest,
-        @RequestParam userId: Int
+        @Valid @RequestBody cardUpdateBucketRequest: CardUpdateBucketRequest
     ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
+            val userId = (ReactiveSecurityContextHolder.getContext()
+                .block()?.authentication?.details as UserDetails).username.toInt()
             cardService.updateCardBucket(
-                cardUpdateBucketRequest = cardUpdateBucketRequest
+                cardUpdateBucketRequest = cardUpdateBucketRequest,
+                userId = userId
             ).unwrap()
         } catch (e: Exception) {
             ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
@@ -98,12 +100,14 @@ class CardController @Autowired constructor(private val cardService: CardService
 
     @PatchMapping("/updateUser")
     fun assignCardToAnotherUser(
-        @Valid @RequestBody cardUpdateUserRequest: CardUpdateUserRequest,
-        @RequestParam userId: Int
+        @Valid @RequestBody cardUpdateUserRequest: CardUpdateUserRequest
     ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
+            val userId = (ReactiveSecurityContextHolder.getContext()
+                .block()?.authentication?.details as UserDetails).username.toInt()
             cardService.assignCardToAnotherUser(
-                cardUpdateUserRequest = cardUpdateUserRequest
+                cardUpdateUserRequest = cardUpdateUserRequest,
+                userId = userId
             ).unwrap()
         } catch (e: Exception) {
             ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)

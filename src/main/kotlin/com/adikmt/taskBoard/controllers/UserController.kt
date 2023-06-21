@@ -24,7 +24,6 @@ class UserController @Autowired constructor(private val userService: UserService
     fun login(@Valid @RequestBody userRequest: LoginUserRequest)
             : ResponseEntity<ResponseWrapper<UserResponse>> {
         return try {
-            //Check if user token validated and return new token
             userService.login(userRequest).unwrap()
         } catch (e: Exception) {
             ResponseEntity(ResponseWrapper(errorMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)

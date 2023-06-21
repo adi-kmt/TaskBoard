@@ -10,6 +10,8 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.ReactiveSecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -18,10 +20,11 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
 
     @PostMapping
     fun createBucket(
-        @Valid @RequestBody bucketRequest: BucketRequest,
-        @RequestParam userId: Int
+        @Valid @RequestBody bucketRequest: BucketRequest
     ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
+            val userId = (ReactiveSecurityContextHolder.getContext()
+                .block()?.authentication?.details as UserDetails).username.toInt()
             bucketService.createBucket(
                 bucketRequest = bucketRequest,
                 userId = userId

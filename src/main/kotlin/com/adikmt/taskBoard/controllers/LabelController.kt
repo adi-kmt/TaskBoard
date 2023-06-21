@@ -10,6 +10,8 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.ReactiveSecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -28,10 +30,11 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
     @PostMapping
     fun addLabel(
         @Valid @RequestBody labelRequest: LabelRequest,
-        @RequestParam userId: Int,
         @RequestParam boardId: Int
     ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
+            val userId = (ReactiveSecurityContextHolder.getContext()
+                .block()?.authentication?.details as UserDetails).username.toInt()
             labelService.createLabel(
                 labelRequest = labelRequest,
                 userId = userId,
