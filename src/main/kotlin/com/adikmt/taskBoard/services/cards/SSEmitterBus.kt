@@ -9,14 +9,24 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 @Component
 class SSEmitterBus {
-    private val emitterList: MutableList<Pair<Int, SseEmitter>> = CopyOnWriteArrayList()
+    private val emitterMap: HashMap<Int, MutableList<SseEmitter>> = hashMapOf()
 
     fun addEmitter(boardId: Int, emitter: SseEmitter) {
-        emitterList.add(Pair(boardId, emitter))
+        val boardEmitterList = emitterMap[boardId]
+        boardEmitterList?.let { emitterList ->
+            emitterList.add(emitter)
+        } ?: run {
+            val list = CopyOnWriteArrayList<SseEmitter>()
+            val check = list.addIfAbsent(emitter)
+            if (check) emitterMap[boardId] = list
+        }
     }
 
     fun removeEmitter(boardId: Int, emitter: SseEmitter) {
-        emitterList.remove(Pair(boardId, emitter))
+        val boardEmitterList = emitterMap[boardId]
+        boardEmitterList?.let { emitterList ->
+            emitterList.remove(emitter)
+        }
     }
 
     @Async
@@ -24,23 +34,40 @@ class SSEmitterBus {
         cardUpdateBucketRequest: CardUpdateBucketRequest? = null,
         cardUpdateUserRequest: CardUpdateUserRequest? = null
     ) {
-        val deadEmitters: MutableList<Pair<Int, SseEmitter>> = mutableListOf()
         val boardId = cardUpdateBucketRequest?.boardId ?: cardUpdateUserRequest?.boardId ?: 0
-        emitterList.forEach { emitterPair ->
-            if (boardId == emitterPair.first && boardId != 0) {
-                try {
-                    emitterPair.second.send(
-                        SseEmitter.event()
-                            .comment("Update card bucket")
-                            .data(cardUpdateBucketRequest ?: "No card bucket updated")
-                            .comment("Update card assignee")
-                            .data(cardUpdateUserRequest ?: "No card assignee updated")
-                    )
-                } catch (e: Exception) {
-                    deadEmitters.add(emitterPair)
-                }
+        emitterMap[boardId]?.forEach { emitter ->
+            if (cardUpdateBucketRequest != null) {
+                emitUpdateBucket(emitter, cardUpdateBucketRequest)
+            } else if (cardUpdateUserRequest != null) {
+                emitUpdateUser(emitter, cardUpdateUserRequest)
             }
         }
-        emitterList.removeAll(deadEmitters)
+    }
+
+
+    @Async
+    fun emitUpdateBucket(emitter: SseEmitter, cardUpdateBucketRequest: CardUpdateBucketRequest) {
+        try {
+            emitter.send(
+                SseEmitter.event()
+                    .comment("Update card bucket")
+                    .data(cardUpdateBucketRequest)
+            )
+        } catch (e: Exception) {
+            println(e.message)
+        }
+    }
+
+    @Async
+    fun emitUpdateUser(emitter: SseEmitter, cardUpdateUserRequest: CardUpdateUserRequest) {
+        try {
+            emitter.send(
+                SseEmitter.event()
+                    .comment("Update assignee user")
+                    .data(cardUpdateUserRequest)
+            )
+        } catch (e: Exception) {
+            println(e.message)
+        }
     }
 }
