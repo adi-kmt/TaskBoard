@@ -16,7 +16,8 @@ import java.time.LocalDateTime
 @Service
 class CardServiceImpl @Autowired constructor(
     private val cardRepository: CardRepository,
-    private val boardRepository: BoardRepository
+    private val boardRepository: BoardRepository,
+    override val emitter: SSEmitterBus
 ) : CardService {
     override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int> {
         try {
@@ -30,6 +31,7 @@ class CardServiceImpl @Autowired constructor(
                         DbResponseWrapper.UserException(exception = Exception("Non admins can't add cards to board'"))
                     }
                 }
+
                 else -> DbResponseWrapper.UserException(exception = Exception("Something went wrong"))
             }
         } catch (e: Exception) {
@@ -84,6 +86,7 @@ class CardServiceImpl @Autowired constructor(
         userId: Int
     ): DbResponseWrapper<Boolean> {
         return try {
+            emitter.emit(cardUpdateBucketRequest = cardUpdateBucketRequest)
             cardRepository.updateCardBucket(cardUpdateBucketRequest)
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(exception = e)
@@ -95,6 +98,7 @@ class CardServiceImpl @Autowired constructor(
         userId: Int
     ): DbResponseWrapper<Boolean> {
         return try {
+            emitter.emit(cardUpdateUserRequest = cardUpdateUserRequest)
             cardRepository.assignCardToAnotherUser(cardUpdateUserRequest)
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(exception = e)
