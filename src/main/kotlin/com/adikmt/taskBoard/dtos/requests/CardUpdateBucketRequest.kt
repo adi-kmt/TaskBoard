@@ -7,5 +7,7 @@ class CardUpdateBucketRequest(
     @NotNull
     val id: Int,
     @NotNull
-    val newBucketId: Int
+    val newBucketId: Int,
+    @NotNull
+    val boardId: Int
 )

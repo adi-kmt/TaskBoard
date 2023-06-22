@@ -25,17 +25,20 @@ class SSEmitterBus {
         cardUpdateUserRequest: CardUpdateUserRequest? = null
     ) {
         val deadEmitters: MutableList<Pair<Int, SseEmitter>> = mutableListOf()
+        val boardId = cardUpdateBucketRequest?.boardId ?: cardUpdateUserRequest?.boardId ?: 0
         emitterList.forEach { emitterPair ->
-            try {
-                emitterPair.second.send(
-                    SseEmitter.event()
-                        .comment("Update card bucket")
-                        .data(cardUpdateBucketRequest ?: "No card bucket updated")
-                        .comment("Update card assignee")
-                        .data(cardUpdateUserRequest ?: "No card assignee updated")
-                )
-            } catch (e: Exception) {
-                deadEmitters.add(emitterPair)
+            if (boardId == emitterPair.first && boardId != 0) {
+                try {
+                    emitterPair.second.send(
+                        SseEmitter.event()
+                            .comment("Update card bucket")
+                            .data(cardUpdateBucketRequest ?: "No card bucket updated")
+                            .comment("Update card assignee")
+                            .data(cardUpdateUserRequest ?: "No card assignee updated")
+                    )
+                } catch (e: Exception) {
+                    deadEmitters.add(emitterPair)
+                }
             }
         }
         emitterList.removeAll(deadEmitters)

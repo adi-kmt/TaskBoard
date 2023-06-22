@@ -7,5 +7,7 @@ class CardUpdateUserRequest(
     @NotNull
     val id: Int,
     @NotNull
-    val newUserId: Int
+    val newUserId: Int,
+    @NotNull
+    val boardId: Int
 )
