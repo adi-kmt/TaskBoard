@@ -18,6 +18,7 @@ This is a simple P0 clone that emulates a kanban board with boards, buckets and 
 
 - Row based Optimistic Lock
 - Server Sent Events
+- Keyset Pagination
 - JWT based Authentication
 - Testing
     - Unit Testing Controllers
@@ -42,6 +43,18 @@ a performance comparison on [sse and websocket](https://www.timeplus.com/post/we
 Locks are necessary to prevent concurrent row changes in the database. This mechanism is used to prevent concurrent card
 updates in this project. Some videos on the topic are [Link 1](https://youtu.be/I8IlO0hCSgY)
 and [Link 2](https://youtu.be/H_zJ81I_D5E).
+
+### 📑 Pagination
+
+Most common way of implementing pagination is to use offset-based pagination. This involves specifying an offset (the
+number of records to skip) and a limit (the maximum number of records to return) in a query. This can be problematic
+when
+records can be shifted leading to records being skipped/truncated or duplicated. This can also become slower as the
+number of records increases. This happens as the database still needs to read up to the offset number of rows to
+determine where to start selecting data. Another [link](https://youtu.be/WDJRRNCGIRs) on why not to use offset
+pagination.
+In this project, I'm using [Keyset Pagination](https://use-the-index-luke.com/sql/partial-results/fetch-next-page)
+instead.
 
 ### 🏗️ How to set up the project.
 
