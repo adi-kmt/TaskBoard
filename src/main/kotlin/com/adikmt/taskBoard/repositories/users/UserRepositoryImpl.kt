@@ -1,6 +1,6 @@
 package com.adikmt.taskBoard.repositories.users
 
-import com.adikmt.taskBoard.dtos.common.mappers.jetUserResponse
+import com.adikmt.taskBoard.dtos.common.mappers.jwtUserResponse
 import com.adikmt.taskBoard.dtos.common.mappers.toUserResponse
 import com.adikmt.taskBoard.dtos.common.wrappers.DbResponseWrapper
 import com.adikmt.taskBoard.dtos.requests.UserRequest
@@ -31,7 +31,7 @@ class UserRepositoryImpl @Autowired constructor(private val context: DSLContext)
 
             userId?.let {
                 DbResponseWrapper.Success(
-                    data = jetUserResponse(userId)
+                    data = jwtUserResponse(userId)
                 )
             } ?: run {
                 DbResponseWrapper.ServerException(Exception("Could not store data"))

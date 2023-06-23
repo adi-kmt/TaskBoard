@@ -4,6 +4,8 @@ Welcome to the Taskboard Project— which stands as the backend for the
 [client side project](https://github.com/pushpalroy/JetTaskBoardKMP) written with KMP.
 This is a simple P0 clone that emulates a kanban board with boards, buckets and cards.
 
+Access Swagger link using the endpoint- /webjars/swagger-ui/index.html
+
 ### 👨‍💻 Tech stack
 
 | Tools             |                         Link                         |

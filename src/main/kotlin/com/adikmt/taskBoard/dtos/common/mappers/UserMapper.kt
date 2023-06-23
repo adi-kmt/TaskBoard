@@ -2,7 +2,6 @@ package com.adikmt.taskBoard.dtos.common.mappers
 
 import com.adikmt.taskBoard.dtos.responses.JWTUserResponse
 import com.adikmt.taskBoard.dtos.responses.UserResponse
-import com.adikmt.taskBoard.security.JWTUtil
 import jooq.generated.tables.records.UsersRecord
 
 fun UsersRecord.toUserResponse() = UserResponse(
@@ -11,7 +10,7 @@ fun UsersRecord.toUserResponse() = UserResponse(
     userPassword = this.userPassword
 )
 
-fun jetUserResponse(userId: Int) = JWTUserResponse(
+fun jwtUserResponse(userId: Int) = JWTUserResponse(
     userId = userId,
-    token = JWTUtil().generateToken(userId.toString())
+    token = ""
 )

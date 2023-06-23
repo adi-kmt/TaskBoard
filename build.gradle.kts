@@ -52,6 +52,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
+    implementation("org.springdoc:springdoc-openapi-starter-common:2.1.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework:spring-aspects")

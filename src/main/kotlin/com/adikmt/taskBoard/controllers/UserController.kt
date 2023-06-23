@@ -42,7 +42,7 @@ class UserController @Autowired constructor(private val userService: UserService
     @PostMapping("/logout")
     fun logout(): ResponseEntity<ResponseWrapper<String>> {
         return try {
-            val userId = (ReactiveSecurityContextHolder.getContext()
+            val userId = (ReactiveSecurityContextHolder.getContext().share()
                 .block()?.authentication?.principal as UserDetails?)?.username?.toInt()
 
             if (userId != null) {
