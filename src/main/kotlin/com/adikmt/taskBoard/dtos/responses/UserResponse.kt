@@ -19,13 +19,13 @@ data class UserResponse(
         this.userId.toString()
 
     override fun isAccountNonExpired(): Boolean =
-        true
+        false
 
     override fun isAccountNonLocked(): Boolean =
-        true
+        false
 
     override fun isCredentialsNonExpired(): Boolean =
-        true
+        false
 
     override fun isEnabled(): Boolean =
         true
