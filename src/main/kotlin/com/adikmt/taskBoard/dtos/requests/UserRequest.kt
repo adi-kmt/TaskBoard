@@ -9,5 +9,5 @@ class UserRequest(
     val userName: String,
     @NotNull
     @Size(min = 5, max = 30, message = "Please enter a password that lies between 5 and 30 characters")
-    val password: String
+    var password: String
 )

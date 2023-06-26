@@ -10,9 +10,9 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.ReactiveSecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController
 @RequestMapping("/api/board")
@@ -20,11 +20,11 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
 
     @PostMapping
     fun createBoard(
-        @Valid @RequestBody boardRequest: BoardRequest
+        @Valid @RequestBody boardRequest: BoardRequest,
+        @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
-            val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.principal as UserDetails).username.toInt()
+            val userId = principal.name.toInt()
             boardService.createBoard(
                 boardRequest = boardRequest,
                 userId = userId
@@ -36,10 +36,11 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     }
 
     @GetMapping
-    fun getAllBoards(): ResponseEntity<ResponseWrapper<List<BoardResponse>>> {
+    fun getAllBoards(
+        @AuthenticationPrincipal principal: Principal
+    ): ResponseEntity<ResponseWrapper<List<BoardResponse>>> {
         return try {
-            val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.principal as UserDetails).username.toInt()
+            val userId = principal.name.toInt()
             boardService.getAllBoardsForUser(
                 userId = userId
             ).unwrap()
@@ -51,11 +52,11 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
 
     @GetMapping("/{id}")
     fun getBoardById(
-        @PathVariable id: Int
+        @PathVariable id: Int,
+        @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<BoardResponse>> {
         return try {
-            val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.principal as UserDetails).username.toInt()
+            val userId = principal.name.toInt()
             boardService.getBoardById(
                 boardId = id,
                 userId = userId
@@ -69,11 +70,11 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
 
     @GetMapping("/search/{boardName}")
     fun searchBoardByName(
-        @PathVariable boardName: String
+        @PathVariable boardName: String,
+        @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<List<BoardResponse>>> {
         return try {
-            val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.principal as UserDetails).username.toInt()
+            val userId = principal.name.toInt()
             boardService.searchBoardByName(
                 boardName = boardName,
                 userId = userId

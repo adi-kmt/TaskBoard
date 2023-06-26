@@ -13,9 +13,9 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.ReactiveSecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 import java.time.LocalDateTime
 
 @RestController
@@ -24,11 +24,11 @@ class CardController @Autowired constructor(private val cardService: CardService
 
     @PostMapping
     fun createCard(
-        @Valid @RequestBody cardRequest: CardRequest
+        @Valid @RequestBody cardRequest: CardRequest,
+        @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Int>> {
         return try {
-            val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.principal as UserDetails).username.toInt()
+            val userId = principal.name.toInt()
             cardService.createCard(cardRequest = cardRequest, userId = userId)
                 .unwrap(successResponseStatus = ResponseStatus.CREATED)
         } catch (e: Exception) {
@@ -68,11 +68,11 @@ class CardController @Autowired constructor(private val cardService: CardService
 
     @PutMapping("/update")
     fun updateCard(
-        @Valid @RequestBody cardUpdateRequest: CardUpdateRequest
+        @Valid @RequestBody cardUpdateRequest: CardUpdateRequest,
+        @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
-            val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.principal as UserDetails).username.toInt()
+            val userId = principal.name.toInt()
             cardService.updateCardDetails(
                 cardRequest = cardUpdateRequest,
                 userId = userId
@@ -84,11 +84,11 @@ class CardController @Autowired constructor(private val cardService: CardService
 
     @PatchMapping("/updateBucket")
     fun updateCardBucket(
-        @Valid @RequestBody cardUpdateBucketRequest: CardUpdateBucketRequest
+        @Valid @RequestBody cardUpdateBucketRequest: CardUpdateBucketRequest,
+        @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
-            val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.principal as UserDetails).username.toInt()
+            val userId = principal.name.toInt()
             cardService.updateCardBucket(
                 cardUpdateBucketRequest = cardUpdateBucketRequest,
                 userId = userId
@@ -100,11 +100,11 @@ class CardController @Autowired constructor(private val cardService: CardService
 
     @PatchMapping("/updateUser")
     fun assignCardToAnotherUser(
-        @Valid @RequestBody cardUpdateUserRequest: CardUpdateUserRequest
+        @Valid @RequestBody cardUpdateUserRequest: CardUpdateUserRequest,
+        @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Boolean>> {
         return try {
-            val userId = (ReactiveSecurityContextHolder.getContext()
-                .block()?.authentication?.principal as UserDetails).username.toInt()
+            val userId = principal.name.toInt()
             cardService.assignCardToAnotherUser(
                 cardUpdateUserRequest = cardUpdateUserRequest,
                 userId = userId
