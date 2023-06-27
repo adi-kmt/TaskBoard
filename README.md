@@ -1,7 +1,7 @@
 # Taskboard Application
 
 Welcome to the Taskboard Project— which stands as the backend for the
-[client side project](https://github.com/pushpalroy/JetTaskBoardKMP) written with KMP.
+[client side project](https://github.com/pushpalroy/JetTaskBoardKMP) written with Jetbrains KMP.
 This is a simple P0 clone that emulates a kanban board with boards, buckets and cards.
 
 Access Swagger link using the endpoint- /webjars/swagger-ui/index.html
@@ -37,14 +37,18 @@ SSE was considered over websockets since it provides an asynchronous unidirectio
 informed me about this was from
 a [LinkedIn blog](https://engineering.linkedin.com/blog/2016/10/instant-messaging-at-linkedin--scaling-to-hundreds-of-thousands-)
 and [stackoverflow post](https://stackoverflow.com/questions/5195452/websockets-vs-server-sent-events-eventsource).
-Also,
-a performance comparison on [sse and websocket](https://www.timeplus.com/post/websocket-vs-sse).
+Also, a performance comparison on [sse and websocket](https://www.timeplus.com/post/websocket-vs-sse).
 
 ### 👀 Why Optimistic Lock?
 
 Locks are necessary to prevent concurrent row changes in the database. This mechanism is used to prevent concurrent card
 updates in this project. Some videos on the topic are [Link 1](https://youtu.be/I8IlO0hCSgY)
 and [Link 2](https://youtu.be/H_zJ81I_D5E).
+
+Another solution to prevent concurrent transactions is to
+use [Serializable Transactions Isolation](https://www.postgresql.org/docs/current/transaction-iso.html#XACT-SERIALIZABLE)
+instead of locking rows. There are several other isolation to prevent bad data (i.e. dirty/repeatable reads) but using
+serializable transactions reduces the effect of webflux and suspend transactions allowing only sequential data access.
 
 ### 📑 Pagination
 
@@ -71,6 +75,11 @@ Have any questions, doubts or want to present your opinions, views? You're alway
 ### 🔭 Find this project useful?
 
 Support it by clicking the ⭐️ button on the upper right of this page.
+
+### To improve
+
+- Implement refresh token functionality.
+- Use Webflux Test instead of unit testing controllers.
 
 ### 📚 License
 

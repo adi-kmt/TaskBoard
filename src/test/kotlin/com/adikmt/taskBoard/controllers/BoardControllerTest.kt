@@ -6,9 +6,12 @@ import com.adikmt.taskBoard.dtos.responses.BoardResponse
 import com.adikmt.taskBoard.services.boards.BoardService
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.test.context.support.WithMockUser
 
 @SpringBootTest
@@ -25,96 +28,124 @@ class BoardControllerTest {
     @Test
     @WithMockUser(username = "1")
     fun `create board successfully`() {
-        every { boardService.createBoard(boardRequest = boardRequest, userId = 1) } returns (
-                DbResponseWrapper.Success(data = 1)
-                )
-        val response = boardController.createBoard(boardRequest = boardRequest)
+        runBlocking {
+            every { boardService.createBoard(boardRequest = boardRequest, userId = 1) } returns (
+                    DbResponseWrapper.Success(data = 1)
+                    )
 
-        assert(response.statusCode == HttpStatus.CREATED)
-        assert(response.body?.data == 1)
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+
+            val response = boardController.createBoard(boardRequest = boardRequest, mockPrincipal)
+
+            assert(response.statusCode == HttpStatus.CREATED)
+            assert(response.body?.data == 1)
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `create board with exception`() {
-        every { boardService.createBoard(boardRequest = boardRequest, userId = 1) } returns (
-                DbResponseWrapper.DBException(exception = Exception("Exception"))
-                )
-        val response = boardController.createBoard(boardRequest = boardRequest)
+        runBlocking {
+            every { boardService.createBoard(boardRequest = boardRequest, userId = 1) } returns (
+                    DbResponseWrapper.DBException(exception = Exception("Exception"))
+                    )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
 
-        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-        assert(response.body?.errorMessage == "Exception")
+            val response = boardController.createBoard(boardRequest = boardRequest, mockPrincipal)
+
+            assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+            assert(response.body?.errorMessage == "Exception")
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `Get board successfully`() {
-        every { boardService.getBoardById(boardId = 1, userId = 1) } returns (
-                DbResponseWrapper.Success(data = boardResponse)
-                )
-        val response = boardController.getBoardById(id = 1)
+        runBlocking {
+            every { boardService.getBoardById(boardId = 1, userId = 1) } returns (
+                    DbResponseWrapper.Success(data = boardResponse)
+                    )
 
-        assert(response.statusCode == HttpStatus.OK)
-        assert(response.body?.data == boardResponse)
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = boardController.getBoardById(id = 1, mockPrincipal)
+
+            assert(response.statusCode == HttpStatus.OK)
+            assert(response.body?.data == boardResponse)
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `Get board with exception`() {
-        every { boardService.getBoardById(boardId = 1, userId = 1) } returns (
-                DbResponseWrapper.ServerException(exception = Exception("Exception"))
-                )
-        val response = boardController.getBoardById(id = 1)
+        runBlocking {
+            every { boardService.getBoardById(boardId = 1, userId = 1) } returns (
+                    DbResponseWrapper.ServerException(exception = Exception("Exception"))
+                    )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = boardController.getBoardById(id = 1, mockPrincipal)
 
-        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-        assert(response.body?.errorMessage == "Exception")
+            assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+            assert(response.body?.errorMessage == "Exception")
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `Get board by user successfully`() {
-        every { boardService.getAllBoardsForUser(userId = 1) } returns (
-                DbResponseWrapper.Success(data = listOf(boardResponse))
-                )
-        val response = boardController.getAllBoards()
+        runBlocking {
+            every { boardService.getAllBoardsForUser(userId = 1) } returns (
+                    DbResponseWrapper.Success(data = listOf(boardResponse))
+                    )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = boardController.getAllBoards(mockPrincipal)
 
-        assert(response.statusCode == HttpStatus.OK)
-        assert(response.body?.data == listOf(boardResponse))
+            assert(response.statusCode == HttpStatus.OK)
+            assert(response.body?.data == listOf(boardResponse))
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `Get board by user with exception`() {
-        every { boardService.getAllBoardsForUser(userId = 1) } returns (
-                DbResponseWrapper.DBException(exception = Exception("Exception"))
-                )
-        val response = boardController.getAllBoards()
+        runBlocking {
+            every { boardService.getAllBoardsForUser(userId = 1) } returns (
+                    DbResponseWrapper.DBException(exception = Exception("Exception"))
+                    )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = boardController.getAllBoards(mockPrincipal)
 
-        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-        assert(response.body?.errorMessage == "Exception")
+            assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+            assert(response.body?.errorMessage == "Exception")
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `search board successfully`() {
-        every { boardService.searchBoardByName(userId = 1, boardName = "Board title") } returns (
-                DbResponseWrapper.Success(data = listOf(boardResponse))
-                )
-        val response = boardController.searchBoardByName(boardName = "Board title")
+        runBlocking {
+            every { boardService.searchBoardByName(userId = 1, boardName = "Board title") } returns (
+                    DbResponseWrapper.Success(data = listOf(boardResponse))
+                    )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = boardController.searchBoardByName(boardName = "Board title", mockPrincipal)
 
-        assert(response.statusCode == HttpStatus.OK)
-        assert(response.body?.data == listOf(boardResponse))
+            assert(response.statusCode == HttpStatus.OK)
+            assert(response.body?.data == listOf(boardResponse))
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `search board with exception`() {
-        every { boardService.searchBoardByName(userId = 1, boardName = "Board title") } returns (
-                DbResponseWrapper.DBException(exception = Exception("Exception"))
-                )
-        val response = boardController.searchBoardByName(boardName = "Board title")
+        runBlocking {
+            every { boardService.searchBoardByName(userId = 1, boardName = "Board title") } returns (
+                    DbResponseWrapper.DBException(exception = Exception("Exception"))
+                    )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = boardController.searchBoardByName(boardName = "Board title", mockPrincipal)
 
-        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-        assert(response.body?.errorMessage == "Exception")
+            assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+            assert(response.body?.errorMessage == "Exception")
+        }
     }
 }

@@ -23,7 +23,7 @@ import java.time.LocalDateTime
 class CardController @Autowired constructor(private val cardService: CardService) {
 
     @PostMapping
-    fun createCard(
+    suspend fun createCard(
         @Valid @RequestBody cardRequest: CardRequest,
         @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Int>> {
@@ -37,7 +37,7 @@ class CardController @Autowired constructor(private val cardService: CardService
     }
 
     @GetMapping("/{boardId}")
-    fun getAllCards(
+    suspend fun getAllCards(
         @PathVariable boardId: Int,
         @RequestParam(required = false) assigneeUserId: Int? = null,
         @RequestParam(required = false) limit: Int = 20,
@@ -67,7 +67,7 @@ class CardController @Autowired constructor(private val cardService: CardService
     }
 
     @PutMapping("/update")
-    fun updateCard(
+    suspend fun updateCard(
         @Valid @RequestBody cardUpdateRequest: CardUpdateRequest,
         @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Boolean>> {
@@ -83,7 +83,7 @@ class CardController @Autowired constructor(private val cardService: CardService
     }
 
     @PatchMapping("/updateBucket")
-    fun updateCardBucket(
+    suspend fun updateCardBucket(
         @Valid @RequestBody cardUpdateBucketRequest: CardUpdateBucketRequest,
         @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Boolean>> {
@@ -99,7 +99,7 @@ class CardController @Autowired constructor(private val cardService: CardService
     }
 
     @PatchMapping("/updateUser")
-    fun assignCardToAnotherUser(
+    suspend fun assignCardToAnotherUser(
         @Valid @RequestBody cardUpdateUserRequest: CardUpdateUserRequest,
         @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Boolean>> {

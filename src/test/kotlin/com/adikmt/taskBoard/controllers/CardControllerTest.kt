@@ -6,9 +6,12 @@ import com.adikmt.taskBoard.dtos.responses.CardResponse
 import com.adikmt.taskBoard.services.cards.CardService
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.test.context.support.WithMockUser
 
 @SpringBootTest
@@ -43,24 +46,30 @@ class CardControllerTest {
     @Test
     @WithMockUser(username = "1")
     fun `Create card successfully`() {
-        every { mockCardService.createCard(cardRequest = cardRequest, userId = 1) }.returns(
-            DbResponseWrapper.Success(data = 1)
-        )
-        val response = cardController.createCard(cardRequest = cardRequest)
+        runBlocking {
+            every { mockCardService.createCard(cardRequest = cardRequest, userId = 1) }.returns(
+                DbResponseWrapper.Success(data = 1)
+            )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = cardController.createCard(cardRequest = cardRequest, mockPrincipal)
 
-        assert(response.statusCode == HttpStatus.CREATED)
-        assert(response.body?.data == 1)
+            assert(response.statusCode == HttpStatus.CREATED)
+            assert(response.body?.data == 1)
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `Create card with exception`() {
-        every { mockCardService.createCard(cardRequest = cardRequest, userId = 1) }.returns(
-            DbResponseWrapper.DBException(exception = Exception("Exception"))
-        )
-        val response = cardController.createCard(cardRequest = cardRequest)
+        runBlocking {
+            every { mockCardService.createCard(cardRequest = cardRequest, userId = 1) }.returns(
+                DbResponseWrapper.DBException(exception = Exception("Exception"))
+            )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = cardController.createCard(cardRequest = cardRequest, mockPrincipal)
 
-        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-        assert(response.body?.errorMessage == "Exception")
+            assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+            assert(response.body?.errorMessage == "Exception")
+        }
     }
 }

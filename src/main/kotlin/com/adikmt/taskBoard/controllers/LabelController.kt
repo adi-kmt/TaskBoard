@@ -19,7 +19,7 @@ import java.security.Principal
 class LabelController @Autowired constructor(private val labelService: LabelService) {
 
     @GetMapping
-    fun getAllLabels(): ResponseEntity<ResponseWrapper<List<LabelResponse>>> {
+    suspend fun getAllLabels(): ResponseEntity<ResponseWrapper<List<LabelResponse>>> {
         return try {
             labelService.getAllLabels().unwrap()
         } catch (e: Exception) {
@@ -28,7 +28,7 @@ class LabelController @Autowired constructor(private val labelService: LabelServ
     }
 
     @PostMapping
-    fun addLabel(
+    suspend fun addLabel(
         @Valid @RequestBody labelRequest: LabelRequest,
         @RequestParam boardId: Int,
         @AuthenticationPrincipal principal: Principal

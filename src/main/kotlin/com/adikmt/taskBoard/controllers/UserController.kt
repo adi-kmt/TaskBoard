@@ -25,7 +25,7 @@ class UserController @Autowired constructor(
 ) {
 
     @PostMapping("/login")
-    fun login(@Valid @RequestBody userRequest: LoginUserRequest)
+    suspend fun login(@Valid @RequestBody userRequest: LoginUserRequest)
             : ResponseEntity<ResponseWrapper<UserResponse>> {
         return try {
             userService.login(userRequest).unwrap()
@@ -35,7 +35,7 @@ class UserController @Autowired constructor(
     }
 
     @PostMapping("/register")
-    fun register(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<ResponseWrapper<JWTUserResponse>> {
+    suspend fun register(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<ResponseWrapper<JWTUserResponse>> {
         return try {
             userService.registerUser(userRequest).unwrap(successResponseStatus = ResponseStatus.CREATED)
         } catch (e: Exception) {
@@ -44,7 +44,7 @@ class UserController @Autowired constructor(
     }
 
     @GetMapping("/refreshToken")
-    fun refreshToken(@RequestParam token: String): ResponseEntity<ResponseWrapper<JWTUserResponse>> {
+    suspend fun refreshToken(@RequestParam token: String): ResponseEntity<ResponseWrapper<JWTUserResponse>> {
         return try {
             val userId = jwtSupport.getUsername(BearerToken(token)).toInt()
             ResponseEntity(ResponseWrapper(data = jwtUserResponse(userId)), HttpStatus.OK)

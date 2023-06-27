@@ -6,9 +6,12 @@ import com.adikmt.taskBoard.dtos.responses.LabelResponse
 import com.adikmt.taskBoard.services.labels.LabelService
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.test.context.support.WithMockUser
 
 @SpringBootTest
@@ -25,56 +28,63 @@ class LabelControllerTest {
     @Test
     @WithMockUser(username = "1")
     fun `create label successfully`() {
-        every { labelService.createLabel(labelRequest = labelRequest, userId = 1, boardId = 1) }
-            .returns(
-                DbResponseWrapper.Success(data = 1)
-            )
+        runBlocking {
+            every { labelService.createLabel(labelRequest = labelRequest, userId = 1, boardId = 1) }
+                .returns(
+                    DbResponseWrapper.Success(data = 1)
+                )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = labelController.addLabel(labelRequest = labelRequest, boardId = 1, mockPrincipal)
 
-        val response = labelController.addLabel(labelRequest = labelRequest, boardId = 1)
-
-        assert(response.statusCode == HttpStatus.CREATED)
-        assert(response.body?.data == 1)
+            assert(response.statusCode == HttpStatus.CREATED)
+            assert(response.body?.data == 1)
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `create label with exception`() {
-        every { labelService.createLabel(labelRequest = labelRequest, userId = 1, boardId = 1) }
-            .returns(
-                DbResponseWrapper.DBException(exception = Exception("Exception"))
-            )
+        runBlocking {
+            every { labelService.createLabel(labelRequest = labelRequest, userId = 1, boardId = 1) }
+                .returns(
+                    DbResponseWrapper.DBException(exception = Exception("Exception"))
+                )
+            val mockPrincipal: Authentication = UsernamePasswordAuthenticationToken("1", null)
+            val response = labelController.addLabel(labelRequest = labelRequest, boardId = 1, mockPrincipal)
 
-        val response = labelController.addLabel(labelRequest = labelRequest, boardId = 1)
-
-        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-        assert(response.body?.errorMessage == "Exception")
+            assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+            assert(response.body?.errorMessage == "Exception")
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `Get all label successfully`() {
-        every { labelService.getAllLabels() }
-            .returns(
+        runBlocking {
+            every { labelService.getAllLabels() }.returns(
                 DbResponseWrapper.Success(data = listOf(labelResponse))
             )
 
-        val response = labelController.getAllLabels()
+            val response = labelController.getAllLabels()
 
-        assert(response.statusCode == HttpStatus.OK)
-        assert(response.body?.data == listOf(labelResponse))
+            assert(response.statusCode == HttpStatus.OK)
+            assert(response.body?.data == listOf(labelResponse))
+        }
     }
 
     @Test
     @WithMockUser(username = "1")
     fun `Get all label with Exception`() {
-        every { labelService.getAllLabels() }
-            .returns(
-                DbResponseWrapper.DBException(exception = Exception("Exception"))
-            )
+        runBlocking {
+            every { labelService.getAllLabels() }
+                .returns(
+                    DbResponseWrapper.DBException(exception = Exception("Exception"))
+                )
 
-        val response = labelController.getAllLabels()
+            val response = labelController.getAllLabels()
 
-        assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
-        assert(response.body?.errorMessage == "Exception")
+            assert(response.statusCode == HttpStatus.INTERNAL_SERVER_ERROR)
+            assert(response.body?.errorMessage == "Exception")
+        }
     }
 }

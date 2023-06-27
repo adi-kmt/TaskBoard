@@ -19,7 +19,7 @@ import java.security.Principal
 class BoardController @Autowired constructor(private val boardService: BoardService) {
 
     @PostMapping
-    fun createBoard(
+    suspend fun createBoard(
         @Valid @RequestBody boardRequest: BoardRequest,
         @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Int>> {
@@ -36,7 +36,7 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     }
 
     @GetMapping
-    fun getAllBoards(
+    suspend fun getAllBoards(
         @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<List<BoardResponse>>> {
         return try {
@@ -51,7 +51,7 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     }
 
     @GetMapping("/{id}")
-    fun getBoardById(
+    suspend fun getBoardById(
         @PathVariable id: Int,
         @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<BoardResponse>> {
@@ -69,7 +69,7 @@ class BoardController @Autowired constructor(private val boardService: BoardServ
     }
 
     @GetMapping("/search/{boardName}")
-    fun searchBoardByName(
+    suspend fun searchBoardByName(
         @PathVariable boardName: String,
         @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<List<BoardResponse>>> {

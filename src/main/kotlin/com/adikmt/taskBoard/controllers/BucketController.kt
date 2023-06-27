@@ -19,7 +19,7 @@ import java.security.Principal
 class BucketController @Autowired constructor(private val bucketService: BucketService) {
 
     @PostMapping
-    fun createBucket(
+    suspend fun createBucket(
         @Valid @RequestBody bucketRequest: BucketRequest,
         @AuthenticationPrincipal principal: Principal
     ): ResponseEntity<ResponseWrapper<Int>> {
@@ -35,7 +35,7 @@ class BucketController @Autowired constructor(private val bucketService: BucketS
     }
 
     @GetMapping
-    fun getAllBuckets(
+    suspend fun getAllBuckets(
         @RequestParam boardId: Int
     ): ResponseEntity<ResponseWrapper<List<BucketResponse>>> {
         return try {
