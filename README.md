@@ -29,6 +29,8 @@ Access Swagger link using the endpoint- /webjars/swagger-ui/index.html
 
 ### 📁 DB Schema Design
 
+![DB design](art/db_schema.png)
+
 ### 🤔 Why Server Sent Events?
 
 Server-Sent Events (SSE) enables a unidirectional, real-time communication channel between a server and a client. With
