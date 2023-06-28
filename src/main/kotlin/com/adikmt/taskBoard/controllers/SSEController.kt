@@ -18,26 +18,34 @@ class SSEController @Autowired constructor(private val cardService: CardService)
     @GetMapping("/updateAssignee/{boardId}")
     fun getAssigneeUpdates(
         @PathVariable boardId: Int
-    ): Flux<ServerSentEvent<CardUpdateUserRequest>> {
+    ): Flux<ServerSentEvent<CardUpdateUserRequest>>? {
         return cardService.updateUserSink.asFlux()
             .map {
-                ServerSentEvent
-                    .builder(it)
-                    .event("Update assigned user")
-                    .build()
+                if (boardId == it.boardId) {
+                    ServerSentEvent
+                        .builder(it)
+                        .event("Update assigned user")
+                        .build()
+                } else {
+                    null
+                }
             }
     }
 
     @GetMapping("/updateBucket/{boardId}")
     fun getCardUpdates(
         @PathVariable boardId: Int
-    ): Flux<ServerSentEvent<CardUpdateBucketRequest>> {
+    ): Flux<ServerSentEvent<CardUpdateBucketRequest>>? {
         return cardService.updateCardSink.asFlux()
             .map {
-                ServerSentEvent
-                    .builder(it)
-                    .event("Update Bucket in Board")
-                    .build()
+                if (boardId == it.boardId) {
+                    ServerSentEvent
+                        .builder(it)
+                        .event("Update Bucket in Board")
+                        .build()
+                } else {
+                    null
+                }
             }
     }
 }

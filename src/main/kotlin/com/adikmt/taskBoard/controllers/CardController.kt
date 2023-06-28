@@ -22,6 +22,23 @@ import java.time.LocalDateTime
 @RequestMapping("/api/cards")
 class CardController @Autowired constructor(private val cardService: CardService) {
 
+    /**
+     * APIs
+     * C
+     * 1. Create Card (Only to be done by admin) - Check if bucket exists
+     *
+     * R
+     * 1. Get All cards (Paginated, sorted by created date) - got by board id
+     * 2. Get All cards for a user (Paginated, sorted by created date) - got by board id
+     *
+     * U
+     * 1. Update Card Details
+     * 2. Change Card's bucket
+     * 3. Assign to someone else
+     *
+     * Cannot delete, but archived
+     */
+
     @PostMapping
     suspend fun createCard(
         @Valid @RequestBody cardRequest: CardRequest,

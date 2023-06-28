@@ -23,7 +23,12 @@ class UserController @Autowired constructor(
     private val userService: UserService,
     private val jwtSupport: JwtSupport
 ) {
-
+    /**
+     * APIs
+     * 1. Create user
+     * 2. Get User by userId
+     * 3. Add user to board
+     */
     @PostMapping("/login")
     suspend fun login(@Valid @RequestBody userRequest: LoginUserRequest)
             : ResponseEntity<ResponseWrapper<UserResponse>> {
