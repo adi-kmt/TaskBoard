@@ -118,12 +118,12 @@ object MockObjects {
 
         val cardUpdateBucketRequest = CardUpdateBucketRequest(
             id = 2,
-            bucketId = 1
+            newBucketId = 1
         )
 
         val cardUpdateBucketRequestInvalid = CardUpdateBucketRequest(
             id = 3,
-            bucketId = 1
+            newBucketId = 1
         )
 
         val cardUpdateRequest = CardUpdateRequest(

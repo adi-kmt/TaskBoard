@@ -161,7 +161,7 @@ class CardRepositoryImpl @Autowired constructor(private val context: DSLContext)
     override fun updateCardBucket(cardUpdateBucketRequest: CardUpdateBucketRequest): DbResponseWrapper<Boolean> {
         return try {
             val hasCardBeenUpdated = context.update(CARDS)
-                .set(CARDS.BUCKET_ID, cardUpdateBucketRequest.bucketId)
+                .set(CARDS.BUCKET_ID, cardUpdateBucketRequest.newBucketId)
                 .where(CARDS.ID.eq(cardUpdateBucketRequest.id))
                 .execute()
 

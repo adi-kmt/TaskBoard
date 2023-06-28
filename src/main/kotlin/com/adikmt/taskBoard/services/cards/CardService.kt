@@ -9,6 +9,7 @@ import com.adikmt.taskBoard.dtos.responses.CardResponse
 import java.time.LocalDateTime
 
 interface CardService {
+    val emitter: SSEmitterBus
 
     fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int>
 
