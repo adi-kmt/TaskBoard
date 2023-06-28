@@ -18,6 +18,12 @@ import java.security.Principal
 @RequestMapping("/api/labels")
 class LabelController @Autowired constructor(private val labelService: LabelService) {
 
+    /**
+     * APIs
+     * 1. Create Labels (Only to be done by admin)
+     * 2. Get All labels
+     */
+
     @GetMapping
     suspend fun getAllLabels(): ResponseEntity<ResponseWrapper<List<LabelResponse>>> {
         return try {

@@ -11,12 +11,15 @@ import com.adikmt.taskBoard.repositories.boards.BoardRepository
 import com.adikmt.taskBoard.repositories.cards.CardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Sinks
 import java.time.LocalDateTime
 
 @Service
 class CardServiceImpl @Autowired constructor(
     private val cardRepository: CardRepository,
-    private val boardRepository: BoardRepository
+    private val boardRepository: BoardRepository,
+    override val updateUserSink: Sinks.Many<CardUpdateUserRequest> = Sinks.many().multicast().directBestEffort(),
+    override val updateCardSink: Sinks.Many<CardUpdateBucketRequest> = Sinks.many().multicast().directBestEffort()
 ) : CardService {
     override fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int> {
         try {
@@ -30,6 +33,7 @@ class CardServiceImpl @Autowired constructor(
                         DbResponseWrapper.UserException(exception = Exception("Non admins can't add cards to board'"))
                     }
                 }
+
                 else -> DbResponseWrapper.UserException(exception = Exception("Something went wrong"))
             }
         } catch (e: Exception) {
@@ -84,6 +88,7 @@ class CardServiceImpl @Autowired constructor(
         userId: Int
     ): DbResponseWrapper<Boolean> {
         return try {
+            updateCardSink.tryEmitNext(cardUpdateBucketRequest)
             cardRepository.updateCardBucket(cardUpdateBucketRequest)
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(exception = e)
@@ -95,6 +100,7 @@ class CardServiceImpl @Autowired constructor(
         userId: Int
     ): DbResponseWrapper<Boolean> {
         return try {
+            updateUserSink.tryEmitNext(cardUpdateUserRequest)
             cardRepository.assignCardToAnotherUser(cardUpdateUserRequest)
         } catch (e: Exception) {
             DbResponseWrapper.ServerException(exception = e)

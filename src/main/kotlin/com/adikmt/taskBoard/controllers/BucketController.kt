@@ -18,6 +18,12 @@ import java.security.Principal
 @RequestMapping("/api/buckets")
 class BucketController @Autowired constructor(private val bucketService: BucketService) {
 
+    /**
+     * APIs
+     * 1. Create bucket (Only can be done by admin)
+     * 2. Get All buckets
+     */
+
     @PostMapping
     suspend fun createBucket(
         @Valid @RequestBody bucketRequest: BucketRequest,

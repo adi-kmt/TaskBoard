@@ -6,10 +6,13 @@ import com.adikmt.taskBoard.dtos.requests.CardUpdateBucketRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateRequest
 import com.adikmt.taskBoard.dtos.requests.CardUpdateUserRequest
 import com.adikmt.taskBoard.dtos.responses.CardResponse
+import reactor.core.publisher.Sinks
 import java.time.LocalDateTime
 
 interface CardService {
+    val updateUserSink: Sinks.Many<CardUpdateUserRequest>
 
+    val updateCardSink: Sinks.Many<CardUpdateBucketRequest>
     fun createCard(cardRequest: CardRequest, userId: Int): DbResponseWrapper<Int>
 
     fun getAllCards(boardId: Int, limit: Int, seekAfter: LocalDateTime): List<DbResponseWrapper<CardResponse>>

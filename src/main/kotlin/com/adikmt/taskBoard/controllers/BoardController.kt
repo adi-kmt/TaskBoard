@@ -17,7 +17,14 @@ import java.security.Principal
 @RestController
 @RequestMapping("/api/board")
 class BoardController @Autowired constructor(private val boardService: BoardService) {
-
+    /**
+     * APIs (Only as applicable to particular user)
+     * 1. Create Board
+     * 2. Get Board by ID
+     * 3. Search by board by name
+     * 4. Get All Boards
+     * 5. Get user role for particular board
+     */
     @PostMapping
     suspend fun createBoard(
         @Valid @RequestBody boardRequest: BoardRequest,

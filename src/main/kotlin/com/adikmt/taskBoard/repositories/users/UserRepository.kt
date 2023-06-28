@@ -7,12 +7,6 @@ import com.adikmt.taskBoard.dtos.responses.UserResponse
 
 
 interface UserRepository {
-    /**
-     * APIs to implement
-     * 1. Create user
-     * 2. Get User by userId
-     * 3. Add user to board
-     */
     fun createUser(userRequest: UserRequest): DbResponseWrapper<JWTUserResponse>
     fun getUserByUserId(userId: Int): DbResponseWrapper<UserResponse>
     fun addUserToBoard(userId: Int, boardId: Int): DbResponseWrapper<Boolean>
