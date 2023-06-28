@@ -1,9 +1,9 @@
-HELP.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+src/test/kotlin/com/adikmt/taskBoard/integrationtest/RepoIntegrationTestUtils.kt
 
 ### STS ###
 .apt_generated

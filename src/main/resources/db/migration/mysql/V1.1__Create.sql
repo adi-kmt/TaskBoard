@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_name` varchar(100) NOT NULL,
-  `user_email` varchar(70) NOT NULL,
   `user_password` varchar(150) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `user_name` (`user_name`)
@@ -10,7 +9,6 @@ CREATE TABLE IF NOT EXISTS `users` (
 CREATE TABLE IF NOT EXISTS `boards` (
   `id` int NOT NULL AUTO_INCREMENT,
   `board_title` varchar(70) NOT NULL,
-  `is_board_starred` bit DEFAULT 0 NOT NULL,
   PRIMARY KEY (`id`),
   INDEX (`board_title`)
 ) ENGINE=InnoDB;
@@ -41,6 +39,7 @@ CREATE TABLE IF NOT EXISTS `cards` (
   `is_card_archived` bit DEFAULT 0 NOT NULL,
   `bucket_id` int NOT NULL,
   `label_id` int NOT NULL,
+  `modified` timestamp NOT NULL DEFAULT NOW(),
   `user_assigned_id` int NOT NULL,
 
   CONSTRAINT `cards_bucket_added_fk` FOREIGN KEY (`bucket_id`) REFERENCES `buckets` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
